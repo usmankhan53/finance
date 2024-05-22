@@ -40,7 +40,9 @@ function LoginForm({ onLogin }) {
       
       // Handle login and save token
       onLogin(data.token);
+      alert("Login Successfully");
     } catch (error) {
+      alert("Wrong Credientials");
       console.error('Error:', error);
     }
   };

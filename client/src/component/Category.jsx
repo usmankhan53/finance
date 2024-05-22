@@ -40,6 +40,11 @@ export default function Category(props) {
   const addCategory = async (e) => {
     e.preventDefault();
     try {
+
+      if (!newCategory) {
+        alert("Please enter provide valid name")
+         throw new Error("Please enter valid name");
+      }
       const response = await fetch('http://localhost:8001/inventory', {
         method: 'POST',
         headers: {
@@ -54,6 +59,7 @@ export default function Category(props) {
 
       const responseData = await response.json();
       console.log("New category added successfully!");
+      alert("New category added successfully!")
       console.log(responseData);
       setData([...data, newCategory]); // Assuming responseData is not necessary
       setNewCategory(''); // Clear input field
