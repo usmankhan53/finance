@@ -15,6 +15,8 @@ const salesSchema = new mongoose.Schema({
     inventoryItemId: { type: mongoose.Schema.Types.ObjectId, ref: 'InventoryItem' },
     unitsSold: Number,
     unitPrice: Number,
+    clientName: String,
+    clientContact: String,
     paymentType: String,
     soldAt: { type: Date, default: Date.now }
 });

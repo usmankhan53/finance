@@ -83,7 +83,7 @@ router.get('/sales', async (req, res) => {
 
 // POST route to create a new sale
 router.post('/sales', async (req, res) => {
-    const { inventoryItemName, unitsSold, unitPrice, paymentType } = req.body;
+    const { inventoryItemName, unitsSold, unitPrice, clientName, clientContact, paymentType } = req.body;
 
     try {
         const inventoryItem = await InventoryItem.findOne({ name: inventoryItemName });
@@ -95,6 +95,8 @@ router.post('/sales', async (req, res) => {
             inventoryItemId: inventoryItem._id,
             unitsSold,
             unitPrice,
+            clientName,
+            clientContact,
             paymentType
         });
 
