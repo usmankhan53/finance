@@ -13,6 +13,7 @@ const inventoryItemSchema = new mongoose.Schema({
 // Define schema for Sales
 const salesSchema = new mongoose.Schema({
     inventoryItemId: { type: mongoose.Schema.Types.ObjectId, ref: 'InventoryItem' },
+    inventoryItemName: String,
     unitsSold: Number,
     unitPrice: Number,
     clientName: String,

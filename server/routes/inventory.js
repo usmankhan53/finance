@@ -93,6 +93,7 @@ router.post('/sales', async (req, res) => {
 
         const sale = new Sales({
             inventoryItemId: inventoryItem._id,
+            inventoryItemName,
             unitsSold,
             unitPrice,
             clientName,
@@ -189,5 +190,31 @@ router.get('/profit', async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
+
+
+// GET route to calculate available stocks for a specific category item
+router.get('/stocks/category/:category/item/:itemName', async (req, res) => {
+    const { category, itemName } = req.params;
+
+    try {
+        // Find the inventory item by category and name
+        const inventoryItem = await InventoryItem.findOne({ category, name: itemName });
+        if (!inventoryItem) {
+            return res.status(400).json({ message: 'Inventory item not found' });
+        }
+
+        // Calculate total units sold for the inventory item
+        const sales = await Sales.find({ inventoryItemId: inventoryItem._id });
+        const totalUnitsSold = sales.reduce((total, sale) => total + sale.unitsSold, 0);
+
+        // Calculate available stocks
+        const availableStocks = inventoryItem.quantity - totalUnitsSold;
+
+        res.json({ itemName, availableStocks });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 
 module.exports = router;

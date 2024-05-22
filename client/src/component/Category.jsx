@@ -85,14 +85,14 @@ export default function Category(props) {
       </div>
 
       <MDBListGroup style={{ minWidth: '22rem' }} light>
-        {
-          data.map((item, index) => (
-            <MDBListGroupItem key={index} tag='button' noBorders aria-current='true' type='button' className='px-3'>
-              <MDBBtn className='category' onClick={() => toggleOpen(item)}>{item}</MDBBtn>
-            </MDBListGroupItem>
-          ))
-        }
-      </MDBListGroup>
+  {
+    [...new Set(data)].map((item, index) => (
+      <MDBListGroupItem key={index} tag='button' noBorders aria-current='true' type='button' className='px-3'>
+        <MDBBtn className='category' onClick={() => toggleOpen(item)}>{item}</MDBBtn>
+      </MDBListGroupItem>
+    ))
+  }
+</MDBListGroup>
 
       <MDBModal open={basicModal} toggle={closeModal} tabIndex='-1'>
         <MDBModalDialog>

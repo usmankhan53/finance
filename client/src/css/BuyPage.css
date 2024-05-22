@@ -1,0 +1,43 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .input-field {
+    margin-bottom: 15px;
+    width: calc(100% - 20px); /* Subtract the padding from the width */
+  }
+  
+  .submit-btn {
+    width: calc(100% - 20px);
+  }
+  
+  .available-stocks {
+    margin-top: 20px;
+  }
+  
+  .inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .inventory-table th,
+  .inventory-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .inventory-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .inventory-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .inventory-table tr:hover {
+    background-color: #ddd;
+  }
+  
