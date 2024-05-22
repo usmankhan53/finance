@@ -4,6 +4,8 @@ import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import LoginForm from './pages/Login';
 import InventoryPage from './pages/Inventory';
+import SellPage from './pages/SellPage';
+import BuyPage from './pages/BuyPage';
 import AutoLogout from './component/AutoLogout';
 
 function App() {
@@ -43,6 +45,15 @@ function App() {
           path="/inventory"
           element={token ? <InventoryPage onLogout={handleLogout} /> : <Navigate to="/" />}
         />
+       <Route
+          path="/buy"
+          element={token ? <BuyPage onLogout={handleLogout} /> : <Navigate to="/" />}
+        />
+      <Route
+          path="/sell"
+          element={token ? <SellPage onLogout={handleLogout} /> : <Navigate to="/" />}
+      />
+
       </Routes>
     </Router>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../component/Category.css';
+import { useNavigate } from 'react-router-dom';
 import {
   MDBBtn,
   MDBModal,
@@ -13,17 +13,29 @@ import {
   MDBListGroupItem,
   MDBInput
 } from 'mdb-react-ui-kit';
+import '../component/Category.css';
 
 export default function Category(props) {
-
   const [basicModal, setBasicModal] = useState(false);
   const [newCategory, setNewCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const { data, setData } = props; // Assuming you pass setData as a prop to update the category data
+  const navigate = useNavigate();
 
-  const toggleOpen = (e) => {
+  const toggleOpen = (category) => {
+    setSelectedCategory(category);
     setBasicModal(!basicModal);
-    console.log(e.target.textContent);
-  }
+  };
+
+  const closeModal = () => {
+    setBasicModal(false);
+    setSelectedCategory(null);
+  };
+
+  const handleNavigation = (path) => {
+    closeModal();
+    navigate(path, { state: { category: selectedCategory } });
+  };
 
   const addCategory = async (e) => {
     e.preventDefault();
@@ -48,7 +60,7 @@ export default function Category(props) {
     } catch (error) {
       console.error('Error adding new category:', error);
     }
-  }
+  };
 
   return (
     <>
@@ -70,23 +82,25 @@ export default function Category(props) {
         {
           data.map((item, index) => (
             <MDBListGroupItem key={index} tag='button' noBorders aria-current='true' type='button' className='px-3'>
-              <MDBBtn className='category' onClick={toggleOpen}>{item}</MDBBtn>
+              <MDBBtn className='category' onClick={() => toggleOpen(item)}>{item}</MDBBtn>
             </MDBListGroupItem>
           ))
         }
       </MDBListGroup>
 
-      <MDBModal open={basicModal} onClose={() => setBasicModal(false)} tabIndex='-1'>
+      <MDBModal open={basicModal} toggle={closeModal} tabIndex='-1'>
         <MDBModalDialog>
           <MDBModalContent>
             <MDBModalHeader>
-              <MDBModalTitle>Modal title</MDBModalTitle>
-              <MDBBtn className='btn-close' color='none' onClick={toggleOpen}></MDBBtn>
+              <MDBModalTitle>Inventory Operations</MDBModalTitle>
+              <MDBBtn className='btn-close' color='none' onClick={closeModal}></MDBBtn>
             </MDBModalHeader>
-            <MDBModalBody></MDBModalBody>
+            <MDBModalBody>
+              Select an action for {selectedCategory}
+            </MDBModalBody>
             <MDBModalFooter>
-              <MDBBtn className='buy-btn' onClick={toggleOpen}>Buy Inventory</MDBBtn>
-              <MDBBtn className='sale-btn' onClick={toggleOpen}>Sale Inventory</MDBBtn>
+              <MDBBtn className='buy-btn' onClick={() => handleNavigation('/buy')}>Buy Inventory</MDBBtn>
+              <MDBBtn className='sale-btn' onClick={() => handleNavigation('/sell')}>Sell Inventory</MDBBtn>
             </MDBModalFooter>
           </MDBModalContent>
         </MDBModalDialog>
