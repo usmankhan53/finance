@@ -1,201 +1,176 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { MDBInput, MDBBtn } from 'mdb-react-ui-kit';
-import ProfitFilter from '../component/ProfitFilter';
 import '../css/SellPage.css';
 
 const SellPage = () => {
   const location = useLocation();
   const { category } = location.state || { category: 'Unknown' };
-  const [inventoryItems, setInventoryItems] = useState([]);
-  const [selectedItem, setSelectedItem] = useState('');
+
   const [unitsSold, setUnitsSold] = useState('');
   const [unitPrice, setUnitPrice] = useState('');
+  const [amount, setAmount] = useState('');
+  const [profit, setProfit] = useState('');
   const [clientName, setClientName] = useState('');
   const [clientContact, setClientContact] = useState('');
   const [paymentType, setPaymentType] = useState('');
   const [availableStocks, setAvailableStocks] = useState(0);
-  const [exceedLimit, setExceedLimit] = useState(false);
-  const [categoryProfit, setCategoryProfit] = useState(0);
+  const [totalCostFromStocks, setTotalCostFromStocks] = useState(0);
+  const [exceedingStocks, setExceedingStocks] = useState(false);
 
-  const fetchInventoryItems = async () => {
+  // Define fetchStockData function
+  const fetchStockData = async () => {
     try {
-      const response = await fetch('http://localhost:8001/inventory');
-      if (!response.ok) {
-        throw new Error('Failed to fetch inventory items');
-      }
-      return await response.json();
-    } catch (error) {
-      console.error('Error fetching inventory items:', error);
-    }
-  };
-
-  const fetchCategoryProfit = async () => {
-    try {
-      const response = await fetch(`http://localhost:8001/profit/category/${category}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch category profit');
-      }
-      const data = await response.json();
-      setCategoryProfit(data.totalProfit);
-    } catch (error) {
-      console.error('Error fetching category profit:', error);
-    }
-  };
-
-  const fetchAvailableStocks = async (itemName) => {
-    try {
-      const response = await fetch(`http://localhost:8001/stocks/category/${category}/item/${itemName}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch available stocks');
-      }
+      const response = await fetch(`http://localhost:8001/inventory-item-stocks/category/${category}`);
+      if (!response.ok) throw new Error('Failed to fetch stock data');
       const data = await response.json();
       setAvailableStocks(data.availableStocks);
+      setTotalCostFromStocks(data.totalCosts);
     } catch (error) {
-      console.error('Error fetching available stocks:', error);
+      console.error('Error fetching stock data:', error);
     }
   };
 
   useEffect(() => {
-    const getInventoryItems = async () => {
-      const items = await fetchInventoryItems();
-      setInventoryItems(items);
-    };
-
-    getInventoryItems();
-  }, []);
-
-  useEffect(() => {
-    if (selectedItem) {
-      fetchAvailableStocks(selectedItem);
-    }
-  }, [selectedItem]);
-
-  useEffect(() => {
-    const unitsSoldInt = parseInt(unitsSold);
-    if (unitsSoldInt > availableStocks) {
-      setExceedLimit(true);
-    } else {
-      setExceedLimit(false);
-    }
-  }, [unitsSold, availableStocks]);
-
-  useEffect(() => {
-    fetchCategoryProfit();
+    fetchStockData();
   }, [category]);
+
+  const updateAmountAndProfit = () => {
+    const amountValue = unitsSold * unitPrice;
+    setAmount(amountValue.toFixed(2));
+    const profitValue = amountValue - totalCostFromStocks;
+    setProfit(profitValue.toFixed(2));
+  };
+
+  useEffect(() => {
+    updateAmountAndProfit();
+  }, [unitsSold, unitPrice, totalCostFromStocks]);
+
+  const handleUnitsSoldChange = (e) => {
+    const value = e.target.value;
+    setUnitsSold(value);
+    if (value > availableStocks) {
+      setExceedingStocks(true);
+    } else {
+      setExceedingStocks(false);
+    }
+    updateAmountAndProfit();
+  };
+
+  const handleUnitPriceChange = (e) => {
+    const value = e.target.value;
+    setUnitPrice(value);
+    updateAmountAndProfit();
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (parseInt(unitsSold) > availableStocks) {
-      alert(`You are trying to sell ${unitsSold} units, but only ${availableStocks} units are available.`);
-      return;
-    }
+    const saleData = {
+      unitsSold,
+      unitPrice,
+      amount,
+      profit,
+      clientName,
+      clientContact,
+      paymentType
+    };
 
     try {
-      const response = await fetch('http://localhost:8001/sales', {
+      const response = await fetch(`http://localhost:8001/sales`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          inventoryItemName: selectedItem,
-          unitsSold,
-          unitPrice,
-          clientName,
-          clientContact,
-          paymentType
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(saleData),
+      });
+      if (!response.ok) throw new Error('Failed to add sale');
+      
+      // Update the stock back to the server
+      const updatedStockData = {
+        availableStocks: availableStocks - unitsSold,
+        totalCosts: totalCostFromStocks
+      };
+      await fetch(`http://localhost:8001/inventory-item-stocks/category/${category}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedStockData),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to add new sale');
-      }
-
-      alert('New sale added successfully!');
-
-      const updatedInventoryItems = await fetchInventoryItems();
-      setInventoryItems(updatedInventoryItems);
-
-      fetchAvailableStocks(selectedItem);
-
-      fetchCategoryProfit();
-
-      setSelectedItem('');
+      // Reset form fields
       setUnitsSold('');
       setUnitPrice('');
       setClientName('');
       setClientContact('');
       setPaymentType('');
+
+      // Fetch updated stock data
+      fetchStockData();
     } catch (error) {
-      console.error('Error adding new sale:', error);
+      console.error('Error adding sale:', error);
     }
   };
 
   return (
-    <div className="sell-page-container">
-      
-      <h1>Sell Inventory for {category}</h1>
-      <ProfitFilter/>
-      <form className="sale-form" onSubmit={handleSubmit}>
-        <select className="form-select" value={selectedItem} onChange={(e) => setSelectedItem(e.target.value)}>
-          <option value="">Select an inventory item</option>
-          {inventoryItems.map((item) => (
-            <option key={item._id} value={item.name}>{item.name}</option>
-          ))}
-        </select>
-
-        <MDBInput
-          className="form-input"
-          label="Units Sold"
+    <div className="sell-container">
+      <div className="available-stocks">Available Stocks: {availableStocks}</div>
+      {exceedingStocks && <div className="exceeding-stocks-warning">Exceeding available stocks!</div>}
+      <form onSubmit={handleSubmit} className="form-inline">
+        <input
           type="number"
+          placeholder="Units Sold"
+          name="unitsSold"
           value={unitsSold}
-          onChange={(e) => setUnitsSold(e.target.value)}
-          style={{ borderColor: exceedLimit ? 'red' : 'initial' }}
+          onChange={handleUnitsSoldChange}
+          className="input-field"
         />
-        {exceedLimit && <p className="exceed-limit-msg">You are exceeding the available stocks.</p>}
-
-        <MDBInput
-          className="form-input"
-          label="Unit Price"
+        <input
           type="number"
+          placeholder="Unit Price"
+          name="unitPrice"
           value={unitPrice}
-          onChange={(e) => setUnitPrice(e.target.value)}
+          onChange={handleUnitPriceChange}
+          className="input-field"
         />
-
-        <MDBInput
-          className="form-input"
-          label="Client Name"
+        <input
           type="text"
+          placeholder="Amount"
+          name="amount"
+          value={amount}
+          readOnly
+          className="input-field"
+        />
+        <input
+          type="text"
+          placeholder="Profit"
+          name="profit"
+          value={profit}
+          readOnly
+          className="input-field"
+        />
+        <input
+          type="text"
+          placeholder="Client Name"
+          name="clientName"
           value={clientName}
           onChange={(e) => setClientName(e.target.value)}
+          className="input-field"
         />
-
-        <MDBInput
-          className="form-input"
-          label="Client Contact"
+        <input
           type="text"
+          placeholder="Client Contact"
+          name="clientContact"
           value={clientContact}
           onChange={(e) => setClientContact(e.target.value)}
+          className="input-field"
         />
-
-        <MDBInput
-          className="form-input"
-          label="Payment Type"
+        <input
           type="text"
+          placeholder="Payment Type"
+          name="paymentType"
           value={paymentType}
           onChange={(e) => setPaymentType(e.target.value)}
+          className="input-field"
         />
-
-        <p className="available-stocks">Available Stocks: {availableStocks}</p>
-
-        <MDBBtn className="submit-btn" type="submit">Submit Sale</MDBBtn>
+        <button type="submit" className="submit-btn">Add Sale</button>
       </form>
-
-      <div className="category-profit">
-        <h3>Category Profit for {category}</h3>
-        <p>Total Profit: {categoryProfit}</p>
-      </div>
     </div>
   );
 };

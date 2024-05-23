@@ -1,46 +1,40 @@
-.buy-btn{
-    background-color: red;
+.container-input-category{
+  width: 300px;
+  height: 100px;
+  margin-left: 40%;
+  margin-top: 1%;
+}
+
+.add-category-btn{
+ margin-left: 100%;
+ margin-bottom: -19%;
+ font-size: 32px;
+}
+
+.input-category{
+  margin-top: -2%;
+   font-size: 32px;
+   font-family: monospace;
+   font-style: italic;
+}
+
+.Container-button{
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.category-btn{
+  margin-top: 30px;
+  margin-left: 20px;
+  font-size: 20px;
+  font-family: monospace;
+ font-style: italic;
 }
 
 .buy-btn:hover{
-    background-color: rgb(189, 97, 97)(125, 62, 62);
+  background-color: green;
 }
 
-.sale-btn{
-    background-color: green;
+.sale-btn:hover{
+  background-color: red;
 }
-
-/* styles.css */
-.category {
-    display: block;
-    width: 100px;
-    margin-bottom: 10px;
-    padding: 10px;
-    text-align: center;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-  }
-  
-  .category:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
-  }
-  
-  .container {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .container-input-category{
-    width: 300px;
-    margin-top: 40px;
-    margin-left: 20px;
-  }
-
-  .add-category-btn{
-    margin: 20px;
-  }
-  
