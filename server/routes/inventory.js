@@ -1,77 +1,89 @@
 const express = require('express');
 const router = express.Router();
-const { InventoryItem, Sales } = require('../model/Inventory'); // Replace 'YourModel' with the actual file name
-const mongoose = require('mongoose');
-const moment = require('moment');
+const { InventoryItem, Sales , InventoryItemStocks } = require('../model/Inventory');
+// const moment = require('moment');
 
-// Calculate Cost of Goods Sold (COGS)
-const calculateCostOfGoodsSold = async (inventoryItemId, unitsSold) => {
-    const inventoryItem = await InventoryItem.findById(inventoryItemId);
-    if (!inventoryItem) {
-        throw new Error('Inventory item not found');
+
+/* CRUD OPERATION FOR INVENTORY */
+
+// Create an inventory item
+router.post('/inventory', async (req, res) => {
+    try {
+        const newItem = new InventoryItem(req.body);
+        await newItem.save();
+        res.status(201).json(newItem);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
-    return inventoryItem.costPerUnit * unitsSold;
-};
+});
 
-// Calculate Revenue
-const calculateRevenue = (unitsSold, unitPrice) => {
-    return unitsSold * unitPrice;
-};
-
-// Calculate Profit for a single sale
-const calculateProfitForSale = async (sale) => {
-    const cogs = await calculateCostOfGoodsSold(sale.inventoryItemId, sale.unitsSold);
-    const revenue = calculateRevenue(sale.unitsSold, sale.unitPrice);
-    return revenue - cogs;
-};
-
-// Calculate total profit for a given time range
-const calculateProfitForPeriod = async (startDate, endDate) => {
-    const sales = await Sales.find({
-        soldAt: {
-            $gte: startDate,
-            $lt: endDate
-        }
-    }).populate('inventoryItemId');
-
-    let totalProfit = 0;
-    for (const sale of sales) {
-        const profit = await calculateProfitForSale(sale);
-        totalProfit += profit;
-    }
-
-    return totalProfit;
-};
-
-// GET route to fetch all inventory items
+// Read all inventory items
 router.get('/inventory', async (req, res) => {
     try {
         const inventoryItems = await InventoryItem.find();
         res.json(inventoryItems);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 });
 
-// POST route to create a new inventory item
-router.post('/inventory', async (req, res) => {
-    const { name, category, quantity, costPerUnit } = req.body;
-    const inventoryItem = new InventoryItem({
-        name,
-        category,
-        quantity,
-        costPerUnit
+// Read a specific inventory item
+router.get('/inventory/:id', async (req, res) => {
+    try {
+        const inventoryItem = await InventoryItem.findById(req.params.id);
+        if (inventoryItem === null) {
+            return res.status(404).json({ message: 'Item not found' });
+        }
+        res.json(inventoryItem);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Update an inventory item
+router.patch('/inventory/:id', async (req, res) => {
+    try {
+        const inventoryItem = await InventoryItem.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json(inventoryItem);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+// Delete an inventory item
+router.delete('/inventory/:id', async (req, res) => {
+    try {
+        await InventoryItem.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Item deleted' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+/* CRUD OPERATION OF SALES INVENTORY */
+
+// Create a new sale
+router.post('/sales', async (req, res) => {
+    const { unitsSold, unitPrice, amount, profit, clientName, clientContact, paymentType } = req.body;
+    const sale = new Sales({
+        unitsSold,
+        unitPrice,
+        amount,
+        profit,
+        clientName,
+        clientContact,
+        paymentType
     });
 
     try {
-        const newInventoryItem = await inventoryItem.save();
-        res.status(201).json(newInventoryItem);
+        const newSale = await sale.save();
+        res.status(201).json(newSale);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
 });
 
-// GET route to fetch all sales
+// Read all sales
 router.get('/sales', async (req, res) => {
     try {
         const sales = await Sales.find();
@@ -81,140 +93,93 @@ router.get('/sales', async (req, res) => {
     }
 });
 
-// POST route to create a new sale
-router.post('/sales', async (req, res) => {
-    const { inventoryItemName, unitsSold, unitPrice, clientName, clientContact, paymentType } = req.body;
-
+// Read a specific sale
+router.get('/sales/:id', async (req, res) => {
     try {
-        const inventoryItem = await InventoryItem.findOne({ name: inventoryItemName });
-        if (!inventoryItem) {
-            return res.status(400).json({ message: 'Inventory item not found' });
+        const sale = await Sales.findById(req.params.id);
+        if (sale === null) {
+            return res.status(404).json({ message: 'Sale not found' });
         }
+        res.json(sale);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 
-        const sale = new Sales({
-            inventoryItemId: inventoryItem._id,
-            inventoryItemName,
-            unitsSold,
-            unitPrice,
-            clientName,
-            clientContact,
-            paymentType
-        });
-
-        const newSale = await sale.save();
-        res.status(201).json(newSale);
+// Update a sale
+router.patch('/sales/:id', async (req, res) => {
+    try {
+        const updatedSale = await Sales.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json(updatedSale);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
 });
 
-
-
-
-// Profit API's Section
-
-
-// GET route to calculate profit based on specific category
-router.get('/profit/category/:category', async (req, res) => {
-    const { category } = req.params;
-
+// Delete a sale
+router.delete('/sales/:id', async (req, res) => {
     try {
-        const inventoryItems = await InventoryItem.find({ category });
-        if (inventoryItems.length === 0) {
-            return res.status(400).json({ message: 'No inventory items found for the specified category' });
-        }
-
-        let totalProfit = 0;
-        for (const item of inventoryItems) {
-            const sales = await Sales.find({ inventoryItemId: item._id });
-            for (const sale of sales) {
-                totalProfit += await calculateProfitForSale(sale);
-            }
-        }
-
-        res.json({ category, totalProfit });
+        await Sales.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Sale deleted' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
 
 
-// GET route to calculate profit for a specific inventory item
-router.get('/profit/:itemName', async (req, res) => {
-    const { itemName } = req.params;
+// Create a new inventory item stock entry
+router.post('/inventory-item-stocks', async (req, res) => {
+    const { category, availableStocks, totalCosts } = req.body;
+    const inventoryItemStock = new InventoryItemStocks({
+        category,
+        availableStocks,
+        totalCosts
+    });
 
     try {
-        const inventoryItem = await InventoryItem.findOne({ name: itemName });
-        if (!inventoryItem) {
-            return res.status(400).json({ message: 'Inventory item not found' });
+        const newInventoryItemStock = await inventoryItemStock.save();
+        res.status(201).json(newInventoryItemStock);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+// Read a specific inventory item stock entry by category
+router.get('/inventory-item-stocks/category/:category', async (req, res) => {
+    try {
+        const inventoryItemStock = await InventoryItemStocks.findOne({ category: req.params.category });
+        if (!inventoryItemStock) {
+            return res.status(404).json({ message: 'Inventory item stock not found for the specified category' });
         }
+        res.json(inventoryItemStock);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 
-        const sales = await Sales.find({ inventoryItemId: inventoryItem._id });
-        let totalProfit = 0;
-        for (const sale of sales) {
-            totalProfit += await calculateProfitForSale(sale);
+// Update an inventory item stock entry by category
+router.patch('/inventory-item-stocks/category/:category', async (req, res) => {
+    try {
+        const updatedInventoryItemStock = await InventoryItemStocks.findOneAndUpdate({ category: req.params.category }, req.body, { new: true });
+        res.json(updatedInventoryItemStock);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// Delete an inventory item stock entry by category
+router.delete('/inventory-item-stocks/category/:category', async (req, res) => {
+    try {
+        const deletedInventoryItemStock = await InventoryItemStocks.findOneAndDelete({ category: req.params.category });
+        if (!deletedInventoryItemStock) {
+            return res.status(404).json({ message: 'Inventory item stock not found for the specified category' });
         }
-
-        res.json({ itemName, totalProfit });
+        res.json({ message: 'Inventory item stock deleted' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
 
 
-// GET route to calculate profit for a given period
-//"http://localhost:8001/profit?period=month"
-
-router.get('/profit', async (req, res) => {
-    const { period } = req.query;
-
-    let startDate;
-    const endDate = new Date();
-
-    if (period === 'day') {
-        startDate = moment().startOf('day').toDate();
-    } else if (period === 'week') {
-        startDate = moment().startOf('week').toDate();
-    } else if (period === 'month') {
-        startDate = moment().startOf('month').toDate();
-    } else if (period === 'year') {
-        startDate = moment().startOf('year').toDate();
-    } else {
-        return res.status(400).json({ message: 'Invalid period. Use "day", "week", "month", or "year".' });
-    }
-
-    try {
-        const totalProfit = await calculateProfitForPeriod(startDate, endDate);
-        res.json({ period, totalProfit });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
-
-
-// GET route to calculate available stocks for a specific category item
-router.get('/stocks/category/:category/item/:itemName', async (req, res) => {
-    const { category, itemName } = req.params;
-
-    try {
-        // Find the inventory item by category and name
-        const inventoryItem = await InventoryItem.findOne({ category, name: itemName });
-        if (!inventoryItem) {
-            return res.status(400).json({ message: 'Inventory item not found' });
-        }
-
-        // Calculate total units sold for the inventory item
-        const sales = await Sales.find({ inventoryItemId: inventoryItem._id });
-        const totalUnitsSold = sales.reduce((total, sale) => total + sale.unitsSold, 0);
-
-        // Calculate available stocks
-        const availableStocks = inventoryItem.quantity - totalUnitsSold;
-
-        res.json({ itemName, availableStocks });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
 
 
 module.exports = router;
