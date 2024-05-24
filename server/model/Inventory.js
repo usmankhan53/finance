@@ -25,6 +25,7 @@ const salesSchema = new mongoose.Schema({
     category: String,
     unitsSold: Number,
     unitPrice: Number,
+    costPerUnit: Number,
     amount: Number,
     profit: Number,
     clientName: String,

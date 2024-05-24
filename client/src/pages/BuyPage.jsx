@@ -215,6 +215,7 @@ const BuyPage = () => {
       <table className="inventory-table">
         <thead>
           <tr>
+            <th>ID</th>
             <th>Units</th>
             <th>Cost per Unit</th>
             <th>Total Amount</th>
@@ -223,8 +224,9 @@ const BuyPage = () => {
           </tr>
         </thead>
         <tbody>
-          {inventory.map((item) => (
+          {inventory.map((item,key) => (
             <tr key={item._id}>
+              <td>{key + 1}</td>
               <td>{item.quantity}</td>
               <td>{item.costPerUnit}</td>
               <td>{item.total_amount}</td>

@@ -111,7 +111,8 @@ export default function Category() {
       <MDBListGroup className='Container-button' style={{ minWidth: '22rem' }} light>
         {
           [...new Set(allCategories)].map((item, index) => (
-            <MDBBtn key={index} className='category-btn' onClick={() => toggleOpen(item.category)}>{item.category}</MDBBtn>
+            <MDBBtn key={index} className='category-btn' onClick={() => toggleOpen(item.category)}>{item.category} 
+            <br/><span style={{fontWeight:'bold'}} className='stock-live'>Live stock is 9</span></MDBBtn>
           ))
         }
       </MDBListGroup>

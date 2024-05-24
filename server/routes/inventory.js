@@ -72,11 +72,12 @@ router.delete('/inventory/:category', async (req, res) => {
 
 // Create a new sale
 router.post('/sales', async (req, res) => {
-    const { category, unitsSold, unitPrice, amount, profit, clientName, clientContact, paymentType } = req.body;
+    const { category, unitsSold, unitPrice, costPerUnit , amount, profit, clientName, clientContact, paymentType } = req.body;
     const sale = new Sales({
         category,
         unitsSold,
         unitPrice,
+        costPerUnit,
         amount,
         profit,
         clientName,

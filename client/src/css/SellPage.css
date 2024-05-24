@@ -1,7 +1,66 @@
-
 .sell-container {
-  margin: 20px;
+  width: 1000px;
+  margin: 30px auto;
+  border-radius: 20px;
+  padding: 40px 40px 40px 40px;
+  box-sizing: border-box;
+  border: 2px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
 }
+
+h3 {
+  font-size: 1.5em;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+p {
+  margin: 0 0 5px;
+  font-size: 1em;
+  color: #555;
+}
+
+.available-stocks, .net-profit {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
+.available-stocks h6, .net-profit h6 {
+  margin: 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.date-filter {
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+}
+
+.date-filter label {
+  margin-right: 10px;
+  font-size: 1em;
+  color: #333;
+}
+
+.date-filter select {
+  padding: 5px 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #333;
+}
+
+.date-filter select:focus {
+  outline: none;
+  border-color: #007BFF;
+}
+
 
 .form-inline {
   display: flex;
@@ -70,3 +129,5 @@
   background-color: #dc3545;
   color: white;
 }
+
+
