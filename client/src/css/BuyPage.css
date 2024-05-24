@@ -88,3 +88,14 @@
 .stock-info p {
   margin: 5px 0;
 }
+
+
+.add-sale-btn{
+  background-color: #3bdc35;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 5px;
+}

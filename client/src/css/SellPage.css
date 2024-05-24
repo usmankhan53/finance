@@ -66,3 +66,7 @@
 .available-stocks {
   margin-bottom: 10px;
 }
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}

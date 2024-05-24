@@ -1,21 +1,49 @@
-.container-input-category{
-  width: 300px;
-  height: 100px;
-  margin-left: 40%;
-  margin-top: 1%;
+.business-container {
+  text-align: center;
+  margin-top: 20px;
+  margin-left: 50px;
 }
 
+.input-category > label {
+  /* Your CSS styles for the label attribute */
+  font-size: 16px;  
+  color: #ec0505 ;
+  /* Add any other styles you need */
+}
+
+.business-name {
+  font-size: 2rem;
+  color: #2e2e2e;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  font-weight: bold;
+}
+
+.container-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 5vh;
+}
+
+.container-input-category {
+  width: 300px;
+  height: 100px;
+}
+
+
 .add-category-btn{
- margin-left: 100%;
- margin-bottom: -19%;
- font-size: 32px;
+  margin-left: 100%;
+  margin-bottom: -19%;
+  font-size: 32px;
 }
 
 .input-category{
   margin-top: -2%;
-   font-size: 32px;
-   font-family: monospace;
-   font-style: italic;
+  font-size: 32px;
+  font-family: monospace;
+  font-style: italic;
 }
 
 .Container-button{
@@ -27,8 +55,8 @@
   margin-top: 30px;
   margin-left: 20px;
   font-size: 20px;
-  font-family: monospace;
- font-style: italic;
+  font-family: serif;
+  background-color: #139c49;
 }
 
 .buy-btn:hover{

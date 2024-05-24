@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../css/BuyPage.css';
 
 const BuyPage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { category } = location.state || { category: 'Unknown' };
 
   const [inventory, setInventory] = useState([]);
@@ -20,27 +21,52 @@ const BuyPage = () => {
       const response = await fetch(`http://localhost:8001/inventory`);
       if (!response.ok) throw new Error('Failed to fetch inventory');
       const data = await response.json();
-      setInventory(data.filter(item => item.category === category));
+      
+      const filteredData = data.filter(item => item.category === category);
+      
+      // Check if records exist for the category
+      if (filteredData.length === 0) {
+        // If no records exist, set availableStocks and totalCosts to 0
+        setAvailableStocks(0);
+        setTotalCosts(0);
+        fetchStockData();
+      } else {
+        // Records exist, set availableStocks and totalCosts based on fetched data
+        fetchStockData();
+      }
+      
+      // Set the filtered inventory data
+      setInventory(filteredData);
     } catch (error) {
       console.error('Error fetching inventory:', error);
     }
   };
+  
 
   const fetchStockData = async () => {
     try {
       const response = await fetch(`http://localhost:8001/inventory-item-stocks/category/${category}`);
       if (!response.ok) throw new Error('Failed to fetch stock data');
       const data = await response.json();
-      setAvailableStocks(data.availableStocks);
-      setTotalCosts(data.totalCosts);
+      
+      // Check if availableStocks or totalCosts are negative, set them to 0 if true
+      const availableStocks = Math.max(0, data.availableStocks);
+      const totalCosts = Math.max(0, data.totalCosts);
+  
+      setAvailableStocks(availableStocks);
+      setTotalCosts(totalCosts);
     } catch (error) {
       console.error('Error fetching stock data:', error);
+      // Set availableStocks and totalCosts to 0 in case of error
+      setAvailableStocks(0);
+      setTotalCosts(0);
     }
   };
+  
 
   useEffect(() => {
-    fetchInventory();
     fetchStockData();
+    fetchInventory();
   }, [category]);
 
   const handleUnitsChange = (e) => {
@@ -101,7 +127,6 @@ const BuyPage = () => {
     setEditId(item._id);
   };
 
-
   const handleDelete = async (id) => {
     try {
       // Find the item to be deleted
@@ -110,10 +135,11 @@ const BuyPage = () => {
   
       // Subtract the units of the deleted item from available stocks
       const updatedAvailableStocks = parseFloat(availableStocks) - parseFloat(itemToDelete.quantity);
-  
+     
+   
       // Subtract the total amount of the deleted item from total costs
       const updatedTotalCosts = parseFloat(totalCosts) - parseFloat(itemToDelete.total_amount);
-  
+
       // Send PATCH request to update stock data
       const stockResponse = await fetch(`http://localhost:8001/inventory-item-stocks/category/${category}`, {
         method: 'PATCH',
@@ -136,6 +162,13 @@ const BuyPage = () => {
     }
   };
   
+  const handleAddSale = (item) => {
+    // history.push({
+    //   pathname: '/sales',
+    //   state: { quantity: item.quantity, costPerUnit: item.costPerUnit }
+    // });
+    navigate('/sell', { state: { category, quantity: item.quantity, costPerUnit: item.costPerUnit } });
+  };
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -197,8 +230,8 @@ const BuyPage = () => {
               <td>{item.total_amount}</td>
               <td>{formatDate(item.createdAt)}</td>
               <td>
-                <button className="edit-btn" onClick={() => handleEdit(item)}>Edit</button>
                 <button className="delete-btn" onClick={() => handleDelete(item._id)}>Delete</button>
+                <button className="add-sale-btn" onClick={() => handleAddSale(item)}>Add Sale</button>
               </td>
             </tr>
           ))}

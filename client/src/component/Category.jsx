@@ -10,7 +10,6 @@ import {
   MDBModalBody,
   MDBModalFooter,
   MDBListGroup,
-  MDBListGroupItem,
   MDBInput,
   MDBIcon
 } from 'mdb-react-ui-kit';
@@ -41,10 +40,9 @@ export default function Category() {
   const addCategory = async (e) => {
     e.preventDefault();
     try {
-
       if (!newCategory) {
-        alert("Please enter provide valid name")
-         throw new Error("Please enter valid name");
+        alert("Please enter a valid name");
+        throw new Error("Please enter a valid name");
       }
       const response = await fetch('http://localhost:8001/inventory-item-stocks', {
         method: 'POST',
@@ -60,16 +58,16 @@ export default function Category() {
 
       const responseData = await response.json();
       console.log("New category added successfully!");
-      alert("New category added successfully!")
+      alert("New category added successfully!");
       console.log(responseData);
-  
+
+      setAllCategories((prevCategories) => [...prevCategories, responseData]);
       setNewCategory(''); // Clear input field
     } catch (error) {
       console.error('Error adding new category:', error);
     }
   };
 
-  
   useEffect(() => {
     const fetchInventoryCategories = async () => {
       try {
@@ -78,9 +76,7 @@ export default function Category() {
           throw new Error('Failed to fetch inventory items');
         }
         const inventoryCategories = await response.json();
-       
         setAllCategories(inventoryCategories);
-
       } catch (error) {
         console.error('Error fetching inventory items:', error);
       }
@@ -91,12 +87,17 @@ export default function Category() {
 
   return (
     <>
+      <div className="business-container">
+        <h1 className="business-name">Sugar Store</h1>
+      </div>
+
+      <div className="container-center">
       <div className="container-input-category">
         <form onSubmit={addCategory}>
-        <MDBBtn type='submit' className='add-category-btn' color='success'><MDBIcon fas icon="plus" /></MDBBtn>
+          <MDBBtn type='submit' className='add-category-btn' color='success'><MDBIcon fas icon="plus" /></MDBBtn>
           <MDBInput
             className='input-category'
-            label="add your new category here"
+            label="NEW CATEGORY"
             id="form1"
             type="text"
             value={newCategory}
@@ -104,14 +105,16 @@ export default function Category() {
           />
         </form>
       </div>
+      </div>
+      
 
       <MDBListGroup className='Container-button' style={{ minWidth: '22rem' }} light>
-  {
-    [...new Set(allCategories)].map((item, index) => ( 
-        <MDBBtn className='category-btn' onClick={() => toggleOpen(item.category)}>{item.category}</MDBBtn>
-    ))
-  }
-</MDBListGroup>
+        {
+          [...new Set(allCategories)].map((item, index) => (
+            <MDBBtn key={index} className='category-btn' onClick={() => toggleOpen(item.category)}>{item.category}</MDBBtn>
+          ))
+        }
+      </MDBListGroup>
 
       <MDBModal open={basicModal} toggle={closeModal} tabIndex='-1'>
         <MDBModalDialog>

@@ -4,7 +4,7 @@ import '../css/SellPage.css';
 
 const SellPage = () => {
   const location = useLocation();
-  const { category } = location.state || { category: 'Unknown' };
+  const { category, quantity, costPerUnit } = location.state || {};
 
   const [unitsSold, setUnitsSold] = useState('');
   const [unitPrice, setUnitPrice] = useState('');
@@ -15,9 +15,22 @@ const SellPage = () => {
   const [paymentType, setPaymentType] = useState('');
   const [availableStocks, setAvailableStocks] = useState(0);
   const [totalCostFromStocks, setTotalCostFromStocks] = useState(0);
+  const [salesData, setSalesData] = useState([]);
   const [exceedingStocks, setExceedingStocks] = useState(false);
 
-  // Define fetchStockData function
+  // Fetch sales data from the API
+  const fetchSalesData = async () => {
+    try {
+      const response = await fetch(`http://localhost:8001/sales`);
+      if (!response.ok) throw new Error('Failed to fetch sales data');
+      const data = await response.json();
+      setSalesData(data.filter(item => item.category === category));
+    } catch (error) {
+      console.error('Error fetching sales data:', error);
+    }
+  };
+  
+  // Fetch stock data from the API
   const fetchStockData = async () => {
     try {
       const response = await fetch(`http://localhost:8001/inventory-item-stocks/category/${category}`);
@@ -30,10 +43,7 @@ const SellPage = () => {
     }
   };
 
-  useEffect(() => {
-    fetchStockData();
-  }, [category]);
-
+  // Function to update amount and profit
   const updateAmountAndProfit = () => {
     const amountValue = unitsSold * unitPrice;
     setAmount(amountValue.toFixed(2));
@@ -42,9 +52,32 @@ const SellPage = () => {
   };
 
   useEffect(() => {
+    fetchSalesData();
+    fetchStockData();
+    
+  }, [category]); // Fetch data when category changes
+
+  useEffect(() => {
     updateAmountAndProfit();
   }, [unitsSold, unitPrice, totalCostFromStocks]);
 
+  // Function to handle deletion of a sale
+  const handleDeleteSale = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8001/sales/${category}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete sale');
+
+      // Update sales data after deletion
+      const updatedSalesData = salesData.filter((sale) => sale.id !== id);
+      setSalesData(updatedSalesData);
+    } catch (error) {
+      console.error('Error deleting sale:', error);
+    }
+  };
+
+  // Handle change in units sold
   const handleUnitsSoldChange = (e) => {
     const value = e.target.value;
     setUnitsSold(value);
@@ -56,16 +89,19 @@ const SellPage = () => {
     updateAmountAndProfit();
   };
 
+  // Handle change in unit price
   const handleUnitPriceChange = (e) => {
     const value = e.target.value;
     setUnitPrice(value);
     updateAmountAndProfit();
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const saleData = {
+      category,
       unitsSold,
       unitPrice,
       amount,
@@ -110,7 +146,9 @@ const SellPage = () => {
 
   return (
     <div className="sell-container">
-      <div className="available-stocks">Available Stocks: {availableStocks}</div>
+       <h3>Category: {category} </h3>
+       {quantity} {costPerUnit} 
+      <div className="available-stocks"><h6>Available Stocks: {availableStocks}</h6></div>
       {exceedingStocks && <div className="exceeding-stocks-warning">Exceeding available stocks!</div>}
       <form onSubmit={handleSubmit} className="form-inline">
         <input
@@ -171,8 +209,40 @@ const SellPage = () => {
         />
         <button type="submit" className="submit-btn">Add Sale</button>
       </form>
-    </div>
-  );
+
+      <table className="sales-table">
+        <thead>
+          <tr>
+            <th>Units Sold</th>
+            <th>Unit Price</th>
+            <th>Amount</th>
+            <th>Profit</th>
+            <th>ClientName</th>
+<th>Client Contact</th>
+<th>Payment Type</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+{salesData.map((sale) => (
+<tr key={sale.id}>
+<td>{sale.unitsSold}</td>
+<td>{sale.unitPrice}</td>
+<td>{sale.amount}</td>
+<td>{sale.profit}</td>
+<td>{sale.clientName}</td>
+<td>{sale.clientContact}</td>
+<td>{sale.paymentType}</td>
+<td>
+<button className='delete-btn' onClick={() => handleDeleteSale(sale.id)}>Delete</button>
+</td>
+</tr>
+))}
+</tbody>
+</table>
+</div>
+);
 };
 
 export default SellPage;
+              

@@ -22,7 +22,7 @@ const inventoryItemStocksSchema = new mongoose.Schema({
 
 // Define schema for Sales
 const salesSchema = new mongoose.Schema({
-    
+    category: String,
     unitsSold: Number,
     unitPrice: Number,
     amount: Number,
