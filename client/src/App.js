@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import LoginForm from './pages/Login';
@@ -40,23 +40,23 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={token ? <Navigate to="/inventory" /> : <LoginForm onLogin={handleLogin} />}
+          element={token ? <Navigate to="/manageInventories" /> : <LoginForm onLogin={handleLogin} />}
         />
         <Route
-          path="/inventory"
+          path="/manageInventories"
           element={token ? <InventoryPage onLogout={handleLogout} /> : <Navigate to="/" />}
         />
        <Route
-          path="/buy"
+          path="/categories/:category"
           element={token ? <BuyPage onLogout={handleLogout} /> : <Navigate to="/" />}
         />
       <Route
-          path="/sell"
+          path="/categories/:category/addSales"
           element={token ? <SellPage onLogout={handleLogout} /> : <Navigate to="/" />}
       />
 
      <Route
-          path="/sales"
+          path="/categories/:category/sales"
           element={token ? <SalesTable onLogout={handleLogout} /> : <Navigate to="/" />}
       />
 

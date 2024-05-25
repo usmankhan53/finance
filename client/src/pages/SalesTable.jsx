@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import '../css/SalesTable.css'; // Ensure this CSS file is created for styling the table
+import { useLocation } from 'react-router-dom';
+import '../css/SalesTable.css'; 
 
 const SalesTable = () => {
+
   const [salesData, setSalesData] = useState([]);
+  const location = useLocation();
+  const { category } = location.state || { category: 'Unknown' };
 
   // Function to format the date in a human-readable format
   const formatDate = (dateString) => {
@@ -16,7 +20,7 @@ const SalesTable = () => {
       const response = await fetch('http://localhost:8001/sales');
       if (!response.ok) throw new Error('Failed to fetch sales data');
       const data = await response.json();
-      setSalesData(data);
+      setSalesData(data.filter(item => item.category === category));
     } catch (error) {
       console.error('Error fetching sales data:', error);
     }
@@ -26,15 +30,28 @@ const SalesTable = () => {
     fetchSalesData();
   }, []); // Fetch data when the component mounts
 
+  // Functions to calculate totals
+  const calculateTotalUnitsSold = (salesData) => {
+    return salesData.reduce((total, sale) => total + sale.unitsSold, 0);
+  };
+
+  const calculateTotalAmount = (salesData) => {
+    return salesData.reduce((total, sale) => total + sale.amount, 0);
+  };
+
+  const calculateTotalProfit = (salesData) => {
+    return salesData.reduce((total, sale) => total + sale.profit, 0);
+  };
+
   return (
     <div className="sales-table-container">
-      <h1>SALES RECORDS</h1>
+      <h1>SALES RECORDS OF {category}</h1>
       <table className="sales-table">
         <thead>
           <tr>
             <th>ID</th>
-            <th>Buy Price</th>
-            <th>Unit Price</th>
+            <th>Buying Price Per Unit</th>
+            <th>Selling Price Per Unit</th>
             <th>Units Sold</th>
             <th>Amount</th>
             <th>Profit/Loss</th>
@@ -55,11 +72,20 @@ const SalesTable = () => {
               <td className={sale.profit < 0 ? 'negative-profit' : sale.profit > 0 ? 'positive-profit' : ''}>{sale.profit}</td>
               <td>{sale.clientName}</td>
               <td>{sale.clientContact}</td>
-              <td className={sale.paymentType == "Unpaid" ? 'orange-light': ''}>{sale.paymentType}</td>
+              <td className={sale.paymentType === "Unpaid" ? 'orange-light' : ''}>{sale.paymentType}</td>
               <td>{formatDate(sale.soldAt)}</td> {/* Display the Date column with formatted date */}
             </tr>
           ))}
         </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan="3" className="footer-cell">Total Records: {salesData.length}</td>
+            <td className="footer-cell">Total Units Sold: {calculateTotalUnitsSold(salesData)}</td>
+            <td className="footer-cell">Total Amount: {calculateTotalAmount(salesData)}</td>
+            <td className="footer-cell">Total Profit/Loss: {calculateTotalProfit(salesData)}</td>
+            <td colSpan="4"></td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   );

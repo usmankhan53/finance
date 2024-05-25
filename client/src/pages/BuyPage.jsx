@@ -13,9 +13,7 @@ const BuyPage = () => {
   const [totalAmount, setTotalAmount] = useState('');
   const [availableStocks, setAvailableStocks] = useState('');
   const [totalCosts, setTotalCosts] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
-  const [editId, setEditId] = useState(null);
-
+  
   const fetchInventory = async () => {
     try {
       const response = await fetch(`http://localhost:8001/inventory`);
@@ -83,8 +81,15 @@ const BuyPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const apiEndpoint = isEditing ? `http://localhost:8001/inventory/${category}` : 'http://localhost:8001/inventory';
-    const method = isEditing ? 'PATCH' : 'POST';
+    const apiEndpoint = 'http://localhost:8001/inventory';
+    const method = 'POST';
+
+    if (!units || !costPerUnit) {
+      alert("Both Units and Cost per Unit fields are required");
+      return;
+  }
+      
+   
 
     try {
       const response = await fetch(apiEndpoint, {
@@ -110,8 +115,6 @@ const BuyPage = () => {
       setUnits('');
       setCostPerUnit('');
       setTotalAmount('');
-      setIsEditing(false);
-      setEditId(null);
       fetchInventory();
       fetchStockData(); // Update stock data after submission
     } catch (error) {
@@ -128,6 +131,12 @@ const BuyPage = () => {
   // };
 
   const handleDelete = async (id) => {
+
+
+    const userResponse = prompt("Are you sure you want to delete it ?", "Yes");
+
+   if (userResponse == "Yes") {
+    
     try {
       // Find the item to be deleted
       const itemToDelete = inventory.find(item => item._id === id);
@@ -152,14 +161,20 @@ const BuyPage = () => {
       const response = await fetch(`http://localhost:8001/inventory/${category}`, { method: 'DELETE' });
       if (!response.ok) throw new Error('Failed to delete data');
   
-      // Update state variables after successful deletion
-      setAvailableStocks(updatedAvailableStocks);
       setTotalCosts(updatedTotalCosts);
+      // Update state variables after successful deletion
+      if (availableStocks == 0) {
+        setTotalCosts(0);
+      }
+
+      setAvailableStocks(updatedAvailableStocks);
       fetchInventory(); // Update inventory after deletion
       fetchStockData(); // Update stocks after deletion
     } catch (error) {
       console.error('Error deleting data:', error);
     }
+
+  }
   };
   
   const handleAddSale = (item) => {
@@ -167,24 +182,40 @@ const BuyPage = () => {
     //   pathname: '/sales',
     //   state: { quantity: item.quantity, costPerUnit: item.costPerUnit }
     // });
-    navigate('/sell', { state: { category, quantity: item.quantity, costPerUnit: item.costPerUnit } });
+    navigate('addSales', { state: { category, quantity: item.quantity, costPerUnit: item.costPerUnit, _id: item._id } });
   };
 
   const handleSalesTableNavigation = () => {
-    navigate('/sales');
+    navigate(`sales`, {state: {category}});
   };
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
+  
+  const calculateNetQuantity = (inventory) => {
+    // Calculate the sum of quantities in the inventory array
+    return inventory.reduce((total, item) => total + item.quantity, 0);
+  };
+  
+  const calculateNetCostPerUnit = (inventory) => {
+    // Calculate the average cost per unit in the inventory array
+    const totalCost = inventory.reduce((total, item) => total + item.costPerUnit, 0);
+    return totalCost;
+  };
+  
+  const calculateNetTotalAmount = (inventory) => {
+    // Calculate the sum of total amounts in the inventory array
+    return inventory.reduce((total, item) => total + item.total_amount, 0);
+  };
+  
 
   return (
     <div className="inventory-container">
       <div className="stock-info">
         <h3>Stock Information for {category.toUpperCase()}</h3>
         <p><strong>Available Stocks:</strong> {availableStocks}</p>
-        <p><strong>Total Costs:</strong> ${totalCosts}</p>
       </div>
       <button onClick={handleSalesTableNavigation} className="sales-table-btn">View All Sales</button>
       <form onSubmit={handleSubmit} className="form-inline">
@@ -213,7 +244,7 @@ const BuyPage = () => {
           className="input-field"
         />
         <button type="submit" className="submit-btn">
-          {isEditing ? 'Update' : 'Add'}
+          Add
         </button>
       </form>
 
@@ -243,6 +274,15 @@ const BuyPage = () => {
             </tr>
           ))}
         </tbody>
+
+        <tfoot>
+    <tr>
+      <td>Total Records: {inventory.length}</td>
+      <td>Net Quantity: {calculateNetQuantity(inventory)}</td>
+      <td>Net Cost Per Unit: {calculateNetCostPerUnit(inventory)}</td>
+      <td>Net Total Amount: {calculateNetTotalAmount(inventory)}</td>
+    </tr>
+  </tfoot>
       </table>
     </div>
   );

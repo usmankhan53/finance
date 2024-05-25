@@ -224,7 +224,7 @@ export default function Category() {
               {selectedCategory} Selected
             </MDBModalBody>
             <MDBModalFooter>
-              <MDBBtn className='buy-btn' onClick={() => handleNavigation('/buy')}>Go to inventory</MDBBtn>
+              <MDBBtn className='buy-btn' onClick={() => handleNavigation(`/categories/${selectedCategory}`)}>Go to inventory</MDBBtn>
               {/* <MDBBtn className='sale-btn' onClick={() => handleNavigation('/sell')}>Sell Inventory</MDBBtn> */}
             </MDBModalFooter>
           </MDBModalContent>

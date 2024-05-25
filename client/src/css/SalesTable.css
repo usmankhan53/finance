@@ -42,3 +42,14 @@
     background-color: lightsalmon;
   }
   
+  .footer-cell {
+    font-weight: bold;
+    text-align: right;
+    padding: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .sales-table tfoot tr {
+    border-top: 2px solid #ddd;
+  }
+  

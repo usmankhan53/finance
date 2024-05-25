@@ -58,6 +58,38 @@ router.patch('/inventory/:category', async (req, res) => {
 });
 
 
+// New PATCH API to update an inventory item by ID
+router.patch('/inventory/id/:id', async (req, res) => {
+    try {
+        const { quantity, costPerUnit, total_amount } = req.body;
+        const inventoryItem = await InventoryItem.findByIdAndUpdate(
+            req.params.id,
+            { quantity, costPerUnit, total_amount },
+            { new: true }
+        );
+        if (!inventoryItem) {
+            return res.status(404).json({ message: 'Item not found' });
+        }
+        res.json(inventoryItem);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+// New GET API to fetch an inventory item by ID
+router.get('/inventory/id/:id', async (req, res) => {
+    try {
+        const inventoryItem = await InventoryItem.findById(req.params.id);
+        if (!inventoryItem) {
+            return res.status(404).json({ message: 'Item not found' });
+        }
+        res.json(inventoryItem);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+
 // Delete an inventory item
 router.delete('/inventory/:category', async (req, res) => {
     try {
@@ -67,6 +99,8 @@ router.delete('/inventory/:category', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+
 
 /* CRUD OPERATION OF SALES INVENTORY */
 

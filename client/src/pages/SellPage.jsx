@@ -5,14 +5,14 @@ import dayjs from 'dayjs'; // Import dayjs for date manipulation
 
 const SellPage = () => {
   const location = useLocation();
-  const { category, quantity, costPerUnit } = location.state || {};
+  const { category, quantity, costPerUnit, _id } = location.state || {};
 
   const [unitsSold, setUnitsSold] = useState('');
+  const [item, setItem] = useState(null);
   const [unitPrice, setUnitPrice] = useState('');
   const [amount, setAmount] = useState('');
   const [profit, setProfit] = useState('');
   const [subStock, setSubStock] = useState([]);
-  const [totalSubStocks, settotalSubStocks] = useState(0);
   const [clientName, setClientName] = useState('');
   const [clientContact, setClientContact] = useState('');
   const [paymentType, setPaymentType] = useState('Cash');
@@ -24,12 +24,33 @@ const SellPage = () => {
   const [dateFilter, setDateFilter] = useState('all');
 
   
+  
+  useEffect(() => {
+    const fetchItem = async () => {
+      try {
+        const response = await fetch(`http://localhost:8001/inventory/id/${_id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const data = await response.json();
+        setItem(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchItem();
+  }, []);
+
+
+  
   // Fetch sales data from the API
   const fetchSalesData = async () => {
     try {
       const response = await fetch(`http://localhost:8001/sales`);
       if (!response.ok) throw new Error('Failed to fetch sales data');
       const data = await response.json();
+      console.log(data);
       setSalesData(data.filter(item => item.category === category));
       setSubStock(data.filter(item => item.costPerUnit === costPerUnit));
     } catch (error) {
@@ -105,6 +126,11 @@ const SellPage = () => {
 
   // Function to handle deletion of a sale
   const handleDeleteSale = async (saleTobeDelete) => {
+
+    const userResponse = prompt("Are you sure you want to delete it ?", "Yes");
+
+    if (userResponse == "Yes") {
+
     try {
       const response = await fetch(`http://localhost:8001/sales/${saleTobeDelete}`, {
         method: 'DELETE',
@@ -116,6 +142,8 @@ const SellPage = () => {
     } catch (error) {
       console.error('Error deleting sale:', error);
     }
+
+  }
   };
 
   // Handle change in units sold
@@ -123,7 +151,7 @@ const SellPage = () => {
     const value = e.target.value;
     setUnitsSold(value);
 
-    if (value > updatedSubStocks || value > availableStocks) {
+    if (value > item.quantity || value > availableStocks) {
       setExceedingStocks(true);
     } else {
       setExceedingStocks(false);
@@ -144,6 +172,38 @@ const SellPage = () => {
     updateAmountAndProfit();
   };
 
+  const SubStockUpdateFetch = async (data) => {
+    try {
+      
+      // Ensure the data object contains the _id field
+      const { _id, ...updateData } = data;
+      if (!_id) {
+        throw new Error("The data object must contain an '_id' field");
+      }
+  
+      // Perform the PATCH request
+      const response = await fetch(`http://localhost:8001/inventory/id/${_id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updateData),
+      });
+  
+      // Check for response status
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+  
+      
+      alert("Update successful");
+      
+    } catch (error) {
+      alert(`Failed to update: ${error.message}`);
+      console.error(error);
+    }
+  };
+  
+
+
   // Handle form submission
   const handleSubmit = async (e) => {
 
@@ -163,6 +223,10 @@ const SellPage = () => {
     };
 
     
+    if (!unitsSold || !unitPrice) {
+      alert("Both Units Sold and Unit Price fields are required");
+      return;
+  }
 
     try {
       const response = await fetch(`http://localhost:8001/sales`, {
@@ -171,17 +235,43 @@ const SellPage = () => {
         body: JSON.stringify(saleData),
       });
       if (!response.ok) throw new Error('Failed to add sale');
+
+
       
       // Update the stock back to the server
       const updatedStockData = {
         availableStocks: availableStocks - unitsSold,
-        totalCosts: totalCostFromStocks
+        totalCosts: totalCostFromStocks 
       };
       await fetch(`http://localhost:8001/inventory-item-stocks/category/${category}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedStockData),
       });
+
+     
+        let quantityU = item.quantity - unitsSold;
+        let totalU =  quantityU * costPerUnit;
+      
+
+      alert(quantityU);
+      alert(totalU);
+
+      const subStockUpdate = {
+        quantity: quantityU,
+        total_amount: totalU,
+        _id
+      };
+
+      SubStockUpdateFetch(subStockUpdate);
+
+      // await fetch(`http://localhost:8001/inventory/id${_id}`, {
+      //   method: 'PATCH',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(subStockUpdate),
+      // });
+
+      
 
       // Reset form fields
       setUnitsSold('');
@@ -204,13 +294,19 @@ const SellPage = () => {
 
 
   return (
+
     <div className="sell-container">
-      <h3 >Category: {category.toUpperCase()} </h3> 
-      <p>Sub Units: {updatedSubStocks} <p>Sub Unit Cost : {costPerUnit} </p> </p>
-      
-      
+      {item && (
+  <>
+    <h3>Category: {item.category.toUpperCase()} </h3> 
+    <p>Sub Units: {item.quantity}</p>
+    <p>Sub Unit Cost: {item.costPerUnit}</p>
+    {/* Additional JSX */}
+  </>
+)}
+
       <div className="available-stocks"><h6>Total Available Stocks: {availableStocks}</h6></div>
-      <div className="net-profit"><h6>Net Profit: ${calculateNetProfit()}</h6></div>
+      <div className="net-profit"><h6>Net Profit: Rs{calculateNetProfit()}</h6></div>
 
       <div className="date-filter">
         <label>Date Filter:</label>
@@ -259,7 +355,7 @@ const SellPage = () => {
         />
         <input
           type="text"
-          placeholder="Client Name"
+          placeholder="ClientName (Optional)"
           name="clientName"
           value={clientName}
           onChange={(e) => setClientName(e.target.value)}
@@ -267,7 +363,7 @@ const SellPage = () => {
         />
         <input
           type="text"
-          placeholder="Client Contact"
+          placeholder="Client Contact (Optional)"
           name="clientContact"
           value={clientContact}
           onChange={(e) => setClientContact(e.target.value)}
@@ -285,8 +381,8 @@ const SellPage = () => {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Buy Price</th>
-            <th>Unit Price</th>
+            <th>Buying Price</th>
+            <th>Selling Price</th>
             <th>Units Sold</th>
             <th>Amount</th>
             <th>Profit/Loss</th>

@@ -112,3 +112,47 @@
   cursor: pointer;
   margin-right: 5px;
 }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.table th {
+  background-color: #f2f2f2;
+  color: black;
+  text-align: center;
+}
+
+.footer-row {
+  background-color: #f9f9f9;
+  font-weight: bold;
+}
+
+.footer-row td {
+  border-top: 2px solid #ddd;
+  text-align: center;
+  padding: 10px;
+}
+
+.footer-row td:first-child {
+  text-align: left;
+}
+
+.add-sale-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 5px 10px;
+  margin: 2px;
+  border: none;
+  cursor: pointer;
+}
+
+.delete-btn:hover, .add-sale-btn:hover {
+  background-color: #45a049;
+}
