@@ -130,4 +130,18 @@ p {
   color: white;
 }
 
+.negative-profit {
+  background-color: rgba(192, 76, 76, 0.848);
+  color: white;
+}
+
+.positive-profit {
+  background-color: rgba(102, 168, 102, 0.979);
+  color: white;
+}
+
+.orange-light{
+  background-color: lightsalmon;
+}
+
 

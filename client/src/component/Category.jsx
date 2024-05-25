@@ -9,17 +9,20 @@ import {
   MDBModalTitle,
   MDBModalBody,
   MDBModalFooter,
-  MDBListGroup,
   MDBInput,
-  MDBIcon
+  MDBIcon,
+  MDBFooter
 } from 'mdb-react-ui-kit';
 import '../component/Category.css';
 
 export default function Category() {
   const [basicModal, setBasicModal] = useState(false);
   const [newCategory, setNewCategory] = useState('');
+  const [editCategoryModal, setEditCategoryModal] = useState(false);
+  const [editCategoryName, setEditCategoryName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [allCategories, setAllCategories] = useState([]);
+  const [stockData, setStockData] = useState({});
   const navigate = useNavigate();
 
   const toggleOpen = (category) => {
@@ -30,6 +33,18 @@ export default function Category() {
   const closeModal = () => {
     setBasicModal(false);
     setSelectedCategory(null);
+  };
+
+  const toggleEditCategoryModal = (category) => {
+    setSelectedCategory(category);
+    setEditCategoryName(category);
+    setEditCategoryModal(!editCategoryModal);
+  };
+
+  const closeEditCategoryModal = () => {
+    setEditCategoryModal(false);
+    setSelectedCategory(null);
+    setEditCategoryName('');
   };
 
   const handleNavigation = (path) => {
@@ -68,6 +83,62 @@ export default function Category() {
     }
   };
 
+  const deleteCategory = async (category) => {
+    try {
+      const response = await fetch(`http://localhost:8001/inventory-item-stocks/category/${category}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete category');
+      }
+
+      console.log("Category deleted successfully!");
+      alert("Category deleted successfully!");
+
+      // Update the state to remove the deleted category
+      setAllCategories((prevCategories) => prevCategories.filter((item) => item.category !== category));
+    } catch (error) {
+      console.error('Error deleting category:', error);
+    }
+  };
+
+  const editCategory = async (e) => {
+    e.preventDefault();
+    try {
+      if (!editCategoryName) {
+        alert("Please enter a valid name");
+        throw new Error("Please enter a valid name");
+      }
+      const response = await fetch(`http://localhost:8001/inventory-item-stocks/category/${selectedCategory}`, {
+        method: 'PATCH',  // Use PATCH method here
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ category: editCategoryName })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to edit category');
+      }
+
+      const updatedCategory = await response.json();
+      console.log("Category edited successfully!");
+      alert("Category edited successfully!");
+
+      // Update the state to reflect the edited category
+      setAllCategories((prevCategories) => prevCategories.map((item) =>
+        item.category === selectedCategory ? { ...item, category: editCategoryName } : item
+      ));
+      closeEditCategoryModal();
+    } catch (error) {
+      console.error('Error editing category:', error);
+    }
+  };
+
   useEffect(() => {
     const fetchInventoryCategories = async () => {
       try {
@@ -77,6 +148,23 @@ export default function Category() {
         }
         const inventoryCategories = await response.json();
         setAllCategories(inventoryCategories);
+
+        // Fetch stock data for each category
+        const stockDataTemp = {};
+        for (let item of inventoryCategories) {
+          try {
+            const stockResponse = await fetch(`http://localhost:8001/inventory-item-stocks/category/${item.category}`);
+            if (!stockResponse.ok) {
+              throw new Error(`Failed to fetch stock for category ${item.category}`);
+            }
+            const stockData = await stockResponse.json();
+            stockDataTemp[item.category] = stockData.availableStocks; // Assuming the API returns a stock field
+          } catch (error) {
+            console.error(`Error fetching stock data for category ${item.category}`, error);
+            stockDataTemp[item.category] = 'Error'; // or handle error as needed
+          }
+        }
+        setStockData(stockDataTemp);
       } catch (error) {
         console.error('Error fetching inventory items:', error);
       }
@@ -86,54 +174,95 @@ export default function Category() {
   }, []);
 
   return (
-    <>
+    <div className='category-container-full'>
       <div className="business-container">
-        <h1 className="business-name">Sugar Store</h1>
+        <h1 className="business-name">Dr.Faheem Inventory System</h1>
       </div>
 
       <div className="container-center">
-      <div className="container-input-category">
-        <form onSubmit={addCategory}>
-          <MDBBtn type='submit' className='add-category-btn' color='success'><MDBIcon fas icon="plus" /></MDBBtn>
-          <MDBInput
-            className='input-category'
-            label="NEW CATEGORY"
-            id="form1"
-            type="text"
-            value={newCategory}
-            onChange={(e) => setNewCategory(e.target.value)}
-          />
-        </form>
-      </div>
+        <div className="container-input-category">
+          <form onSubmit={addCategory}>
+            <MDBBtn type='submit' className='add-category-btn' color='success'><MDBIcon fas icon="plus" /></MDBBtn>
+            <MDBInput
+              className='input-category'
+              label="NEW CATEGORY"
+              id="form1"
+              type="text"
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
+            />
+          </form>
+        </div>
       </div>
       
-
-      <MDBListGroup className='Container-button' style={{ minWidth: '22rem' }} light>
-        {
-          [...new Set(allCategories)].map((item, index) => (
-            <MDBBtn key={index} className='category-btn' onClick={() => toggleOpen(item.category)}>{item.category} 
-            <br/><span style={{fontWeight:'bold'}} className='stock-live'>Live stock is 9</span></MDBBtn>
-          ))
-        }
-      </MDBListGroup>
+      <div className="cards-container">
+        {allCategories.map((item, index) => (
+          <div key={index} className="card">
+            <div className="card-body">
+              <h2 className="card-title">{item.category}</h2>
+              <div className="stock-info">
+                <strong>Available Stock:</strong> {stockData[item.category] !== undefined ? stockData[item.category] : 'Loading...'}
+              </div>
+              <div className="card-buttons">
+                <button className="btn btn-primary" onClick={() => toggleOpen(item.category)}>Go to Inventory</button>
+                <button className="btn btn-danger" onClick={() => deleteCategory(item.category)}>Delete Category</button>
+                <button className="btn btn-info" onClick={() => toggleEditCategoryModal(item.category)}>Edit Name</button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
 
       <MDBModal open={basicModal} toggle={closeModal} tabIndex='-1'>
         <MDBModalDialog>
           <MDBModalContent>
             <MDBModalHeader>
-              <MDBModalTitle>Inventory Operations</MDBModalTitle>
+              <MDBModalTitle>Category Details</MDBModalTitle>
               <MDBBtn className='btn-close' color='none' onClick={closeModal}></MDBBtn>
             </MDBModalHeader>
             <MDBModalBody>
-              Select an action for {selectedCategory}
+              {selectedCategory} Selected
             </MDBModalBody>
             <MDBModalFooter>
-              <MDBBtn className='buy-btn' onClick={() => handleNavigation('/buy')}>Buy Inventory</MDBBtn>
-              <MDBBtn className='sale-btn' onClick={() => handleNavigation('/sell')}>Sell Inventory</MDBBtn>
+              <MDBBtn className='buy-btn' onClick={() => handleNavigation('/buy')}>Go to inventory</MDBBtn>
+              {/* <MDBBtn className='sale-btn' onClick={() => handleNavigation('/sell')}>Sell Inventory</MDBBtn> */}
             </MDBModalFooter>
           </MDBModalContent>
         </MDBModalDialog>
       </MDBModal>
-    </>
+
+      <MDBModal open={editCategoryModal} toggle={closeEditCategoryModal} tabIndex='-1'>
+        <MDBModalDialog>
+          <MDBModalContent>
+            <MDBModalHeader>
+              <MDBModalTitle>Edit Category</MDBModalTitle>
+              <MDBBtn className='btn-close' color='none' onClick={closeEditCategoryModal}></MDBBtn>
+            </MDBModalHeader>
+            <MDBModalBody>
+              <form onSubmit={editCategory}>
+                <MDBInput
+                  label="Edit Category Name"
+                  id="editCategoryInput"
+                  type="text"
+                  value={editCategoryName}
+                  onChange={(e) => setEditCategoryName(e.target.value)}
+                />
+                <MDBBtn type='submit' color='primary'>Save Changes</MDBBtn>
+              </form>
+            </MDBModalBody>
+          </MDBModalContent>
+        </MDBModalDialog>
+      </MDBModal>
+
+      <MDBFooter bgColor='light' className='footer-category'>
+        <div className='text-center new-text-style p-3' style={{ backgroundColor: '#139c49' }}>
+        &copy; {new Date().getFullYear()} Copyright:{' '}
+          <a className='text-white' href='https://mdbootstrap.com/'>
+            Developed and Managed By techxudo.com
+          </a>
+        </div>
+        </MDBFooter>
+      </div>
+
   );
 }

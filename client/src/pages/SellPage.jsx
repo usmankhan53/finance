@@ -275,8 +275,8 @@ const SellPage = () => {
         />
         <select className='input-field' value={paymentType} onChange={(e) => setPaymentType(e.target.value)}>
           <option value="Cash">Cash</option>
-          <option value="Credit">Credit</option>
-          <option value="Debit">Debit</option>
+          <option value="Bank">Bank</option>
+          <option value="Unpaid">Unpaid</option>
         </select>
         <button type="submit" className="submit-btn">Add Sale</button>
       </form>
@@ -285,11 +285,11 @@ const SellPage = () => {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Units Sold</th>
-            <th>Unit Price</th>
             <th>Buy Price</th>
+            <th>Unit Price</th>
+            <th>Units Sold</th>
             <th>Amount</th>
-            <th>Profit</th>
+            <th>Profit/Loss</th>
             <th>Client Name</th>
             <th>Client Contact</th>
             <th>Payment Type</th>
@@ -300,14 +300,14 @@ const SellPage = () => {
           {filteredSalesData.map((sale,key) => (
             <tr key={sale.id}>
               <td>{key + 1}</td>
-              <td>{sale.unitsSold}</td>
-              <td>{sale.unitPrice}</td>
               <td>{sale.costPerUnit}</td>
+              <td>{sale.unitPrice}</td>
+              <td>{sale.unitsSold}</td>
               <td>{sale.amount}</td>
-              <td>{sale.profit}</td>
+              <td className={sale.profit < 0 ? 'negative-profit' : sale.profit > 0 ? 'positive-profit' : ''}>{sale.profit}</td>
               <td>{sale.clientName}</td>
               <td>{sale.clientContact}</td>
-              <td>{sale.paymentType}</td>
+              <td className={sale.paymentType == "Unpaid" ? 'orange-light': ''}>{sale.paymentType}</td>
               <td>
                 <button className='delete-btn' onClick={() => handleDeleteSale(sale.category)}>Delete</button>
               </td>

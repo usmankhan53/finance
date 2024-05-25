@@ -7,6 +7,7 @@ import InventoryPage from './pages/Inventory';
 import SellPage from './pages/SellPage';
 import BuyPage from './pages/BuyPage';
 import AutoLogout from './component/AutoLogout';
+import SalesTable from './pages/SalesTable';
 
 function App() {
   const [token, setToken] = useState(null);
@@ -52,6 +53,11 @@ function App() {
       <Route
           path="/sell"
           element={token ? <SellPage onLogout={handleLogout} /> : <Navigate to="/" />}
+      />
+
+     <Route
+          path="/sales"
+          element={token ? <SalesTable onLogout={handleLogout} /> : <Navigate to="/" />}
       />
 
       </Routes>

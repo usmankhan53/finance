@@ -119,13 +119,13 @@ const BuyPage = () => {
     }
   };
 
-  const handleEdit = (item) => {
-    setUnits(item.quantity);
-    setCostPerUnit(item.costPerUnit);
-    setTotalAmount(item.total_amount);
-    setIsEditing(true);
-    setEditId(item._id);
-  };
+  // const handleEdit = (item) => {
+  //   setUnits(item.quantity);
+  //   setCostPerUnit(item.costPerUnit);
+  //   setTotalAmount(item.total_amount);
+  //   setIsEditing(true);
+  //   setEditId(item._id);
+  // };
 
   const handleDelete = async (id) => {
     try {
@@ -170,6 +170,10 @@ const BuyPage = () => {
     navigate('/sell', { state: { category, quantity: item.quantity, costPerUnit: item.costPerUnit } });
   };
 
+  const handleSalesTableNavigation = () => {
+    navigate('/sales');
+  };
+
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -182,6 +186,7 @@ const BuyPage = () => {
         <p><strong>Available Stocks:</strong> {availableStocks}</p>
         <p><strong>Total Costs:</strong> ${totalCosts}</p>
       </div>
+      <button onClick={handleSalesTableNavigation} className="sales-table-btn">View All Sales</button>
       <form onSubmit={handleSubmit} className="form-inline">
         <input
           type="number"

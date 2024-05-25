@@ -1,76 +1,92 @@
-.business-container {
-  text-align: center;
-  margin-top: 20px;
-  margin-left: 50px;
+.category-container-full {
+  margin: 20px;
 }
 
-.input-category > label {
-  /* Your CSS styles for the label attribute */
-  font-size: 16px;  
-  color: #ec0505 ;
-  /* Add any other styles you need */
+.business-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align items at the top */
+  margin-bottom: 20px;
+  padding-top: 20px; /* Add padding to create space from the top */
 }
 
 .business-name {
-  font-size: 2rem;
-  color: #2e2e2e;
-  text-align: center;
-  font-family: 'Arial', sans-serif;
-  font-weight: bold;
+  font-size: 50px;
+  color: #333; /* Set text color */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add text shadow for depth */
+  letter-spacing: 2px; /* Add letter spacing for readability */
+  text-transform: uppercase; /* Convert text to uppercase */
+  font-family: 'Arial', sans-serif; /* Set font family */
+  background-color: #f0f0f0; /* Set background color */
+  padding: 10px 20px; /* Add padding */
+  border-radius: 10px; /* Add border radius for rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add box shadow for depth */
 }
 
-.container-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 5vh;
-}
+
 
 .container-input-category {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.add-category-btn {
+ left: 300px;
+ top: 34px;
+}
+
+.container-center{
+  margin-top: -30px;
+}
+
+.input-category {
   width: 300px;
-  height: 100px;
 }
 
-
-.add-category-btn{
-  margin-left: 100%;
-  margin-bottom: -19%;
-  font-size: 32px;
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(300px, 1fr)); /* Display three categories per row */
+  grid-gap: 20px;
 }
 
-.input-category{
-  margin-top: -2%;
-  font-size: 32px;
-  font-family: serif;
+.card {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  padding: 20px;
 }
 
-.Container-button{
-  flex-direction: row;
-  flex-wrap: wrap;
+.card-body {
+  display: flex;
+  flex-direction: column;
 }
 
-.category-btn{
-  margin-top: 30px;
-  font-size: 30px;
-  margin-left: 50px;
-  width: 520px;
-  height: 400px;
-  font-family: serif;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+.card-title {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.stock-info {
+  margin-bottom: 10px;
+}
+
+.card-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.footer-category {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
   background-color: #139c49;
-  
+  padding: 20px 0; /* Add some padding for better spacing */
+  color: white; /* Set text color */
 }
 
-.stock-live{
-  
-}
 
-.buy-btn:hover{
-  background-color: green;
-}
-
-.sale-btn:hover{
-  background-color: red;
+.new-text-style {
+  color: white;
 }

@@ -1,0 +1,44 @@
+.sales-table-container {
+    padding: 20px;
+  }
+  
+  .sales-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 1em;
+    text-align: left;
+  }
+  
+  .sales-table th, .sales-table td {
+    padding: 12px 15px;
+  }
+  
+  .sales-table th {
+    background-color: #009879;
+    color: white;
+  }
+  
+  .sales-table tr:nth-child(even) {
+    background-color: #f3f3f3;
+  }
+  
+  .sales-table tr:nth-child(odd) {
+    background-color: #ffffff;
+  }
+  
+
+  .negative-profit {
+    background-color: rgba(192, 76, 76, 0.848);
+    color: white;
+  }
+  
+  .positive-profit {
+    background-color: rgba(102, 168, 102, 0.979);
+    color: white;
+  }
+
+  .orange-light{
+    background-color: lightsalmon;
+  }
+  
