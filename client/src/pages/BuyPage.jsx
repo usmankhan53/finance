@@ -12,58 +12,28 @@ const BuyPage = () => {
   const [costPerUnit, setCostPerUnit] = useState('');
   const [totalAmount, setTotalAmount] = useState('');
   const [availableStocks, setAvailableStocks] = useState('');
-  const [totalCosts, setTotalCosts] = useState('');
+
   
   const fetchInventory = async () => {
     try {
-      const response = await fetch(`http://localhost:8001/inventory`);
+
+      const response = await fetch(`http://localhost:8001/inventory/${category}`);
+
       if (!response.ok) throw new Error('Failed to fetch inventory');
+
       const data = await response.json();
-      
-      const filteredData = data.filter(item => item.category === category);
-      
-      // Check if records exist for the category
-      if (filteredData.length === 0) {
-        // If no records exist, set availableStocks and totalCosts to 0
-        setAvailableStocks(0);
-        setTotalCosts(0);
-        fetchStockData();
-      } else {
-        // Records exist, set availableStocks and totalCosts based on fetched data
-        fetchStockData();
-      }
-      
-      // Set the filtered inventory data
-      setInventory(filteredData);
+          
+      // Set the inventory data
+      setInventory(data.purchases);
+      setAvailableStocks(data.availableStocks);
     } catch (error) {
       console.error('Error fetching inventory:', error);
     }
   };
   
 
-  const fetchStockData = async () => {
-    try {
-      const response = await fetch(`http://localhost:8001/inventory-item-stocks/category/${category}`);
-      if (!response.ok) throw new Error('Failed to fetch stock data');
-      const data = await response.json();
-      
-      // Check if availableStocks or totalCosts are negative, set them to 0 if true
-      const availableStocks = Math.max(0, data.availableStocks);
-      const totalCosts = Math.max(0, data.totalCosts);
-  
-      setAvailableStocks(availableStocks);
-      setTotalCosts(totalCosts);
-    } catch (error) {
-      console.error('Error fetching stock data:', error);
-      // Set availableStocks and totalCosts to 0 in case of error
-      setAvailableStocks(0);
-      setTotalCosts(0);
-    }
-  };
-  
-
   useEffect(() => {
-    fetchStockData();
+    
     fetchInventory();
   }, [category]);
 
@@ -81,57 +51,42 @@ const BuyPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const apiEndpoint = 'http://localhost:8001/inventory';
-    const method = 'POST';
-
+  
     if (!units || !costPerUnit || units <= 0 || costPerUnit <= 0) {
       alert("Units and Cost per Unit must be positive values and both fields are required");
       return;
     }
-      
-   
-
+    
+    const apiEndpoint = `http://localhost:8001/purchase/${category}`;
+    const method = 'PUT';
+  
     try {
-
+      const purchaseData = {
+        quantity: units,
+        costPerUnit: costPerUnit
+      };
+  
       const response = await fetch(apiEndpoint, {
         method: method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category, quantity: units, costPerUnit, total_amount: totalAmount }),
+        body: JSON.stringify(purchaseData),
       });
+  
       if (!response.ok) throw new Error('Failed to save data');
-
-
-      // Post data to the second API
-    const response2 = await fetch('http://localhost:8001/inventoryPurchases', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ category, quantity: units, costPerUnit, total_amount: totalAmount }),
-    });
-    if (!response2.ok) throw new Error('Failed to post data to inventory Purchases');
-
-      // Update stock data
-      const updatedStockData = {
-        availableStocks: parseFloat(availableStocks) + parseFloat(units),
-        totalCosts: parseFloat(totalCosts) + parseFloat(totalAmount)
-      };
-
-      const stockResponse = await fetch(`http://localhost:8001/inventory-item-stocks/category/${category}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedStockData),
-      });
-      if (!stockResponse.ok) throw new Error('Failed to update stock data');
-
+  
+      const result = await response.json();
+      console.log(result.message);
+  
       setUnits('');
       setCostPerUnit('');
       setTotalAmount('');
       fetchInventory();
-      fetchStockData(); // Update stock data after submission
+      
     } catch (error) {
       console.error('Error saving data:', error);
     }
   };
-
+  
 
   // useEffect(() => {
   //   const filteredInventory = inventory.filter(item => item.quantity !== 0 && item.total_amount !== 0);
@@ -146,58 +101,32 @@ const BuyPage = () => {
   //   setEditId(item._id);
   // };
 
-  const handleDelete = async (id) => {
-
+  const handleDelete = async (purchaseId) => {
 
     const userResponse = prompt("Are you sure you want to delete it ?", "Yes");
-
-   if (userResponse == "Yes") {
-    
-    try {
-      // Find the item to be deleted
-      const itemToDelete = inventory.find(item => item._id === id);
-      if (!itemToDelete) throw new Error('Item not found');
   
-      // Subtract the units of the deleted item from available stocks
-      const updatedAvailableStocks = parseFloat(availableStocks) - parseFloat(itemToDelete.quantity);
-     
-   
-      // Subtract the total amount of the deleted item from total costs
-      const updatedTotalCosts = parseFloat(totalCosts) - parseFloat(itemToDelete.total_amount);
-
-      // Send PATCH request to update stock data
-      const stockResponse = await fetch(`http://localhost:8001/inventory-item-stocks/category/${category}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ availableStocks: updatedAvailableStocks, totalCosts: updatedTotalCosts }),
-      });
-      if (!stockResponse.ok) throw new Error('Failed to update stock data');
+    if (userResponse === "Yes") {
+      try {
+        const response = await fetch(`http://localhost:8001/purchase/${category}/${purchaseId}`, {
+          method: 'PUT',
+        });
   
-      // Send DELETE request to delete the item
-      const response = await fetch(`http://localhost:8001/inventory/${category}`, { method: 'DELETE' });
-      if (!response.ok) throw new Error('Failed to delete data');
+        if (!response.ok) throw new Error('Failed to delete purchase record');
   
-      setTotalCosts(updatedTotalCosts);
-      // Update state variables after successful deletion
-      if (availableStocks == 0) {
-        setTotalCosts(0);
+        const result = await response.json();
+        console.log(result.message);
+  
+        // Update state or perform any necessary actions after successful deletion
+        fetchInventory(); // Example: Refresh inventory data
+      } catch (error) {
+        console.error('Error deleting purchase record:', error);
       }
-
-      setAvailableStocks(updatedAvailableStocks);
-      fetchInventory(); // Update inventory after deletion
-      fetchStockData(); // Update stocks after deletion
-    } catch (error) {
-      console.error('Error deleting data:', error);
     }
-
-  }
   };
   
+  
   const handleAddSale = (item) => {
-    // history.push({
-    //   pathname: '/sales',
-    //   state: { quantity: item.quantity, costPerUnit: item.costPerUnit }
-    // });
+  
     navigate('addSales', { state: { category, quantity: item.quantity, costPerUnit: item.costPerUnit, _id: item._id } });
   };
 
@@ -219,15 +148,10 @@ const BuyPage = () => {
     return inventory.reduce((total, item) => total + item.quantity, 0);
   };
   
-  // const calculateNetCostPerUnit = (inventory) => {
-  //   // Calculate the average cost per unit in the inventory array
-  //   const totalCost = inventory.reduce((total, item) => total + item.costPerUnit, 0);
-  //   return totalCost;
-  // };
   
   const calculateNetTotalAmount = (inventory) => {
     // Calculate the sum of total amounts in the inventory array
-    return inventory.reduce((total, item) => total + item.total_amount, 0);
+    return inventory.reduce((total, item) => total + item.totalAmount, 0);
   };
   
 
@@ -286,7 +210,7 @@ const BuyPage = () => {
       <td>{key + 1}</td>
       <td>{item.quantity}</td>
       <td>{item.costPerUnit}</td>
-      <td>{item.total_amount}</td>
+      <td>{item.totalAmount}</td>
       <td>{formatDate(item.createdAt)}</td>
       <td>
         <button className="delete-btn" onClick={() => handleDelete(item._id)}>Delete</button>

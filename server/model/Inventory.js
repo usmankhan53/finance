@@ -1,55 +1,38 @@
-// Import mongoose for MongoDB schema modeling
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const { v4: uuidv4 } = require('uuid'); // Import UUID library
 
-// Define schema for Inventory Item
-const inventoryItemSchema = new mongoose.Schema({
-    category: String,
-    quantity: { type: Number, default: 0 }, // Set default value for quantity
-    costPerUnit: { type: Number, default: 0 }, // Set default value for costPerUnit
-    total_amount: { type: Number, default: 0 }, // Set default value for total_amount
+const purchaseSchema = new Schema({
+    _id: { type: String, default: uuidv4 }, // Unique ID for purchase
+    quantity: { type: Number, default: 0 },
+    costPerUnit: { type: Number, default: 0 },
+    totalAmount: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now }
 });
 
-// Define schema for PurchasesInventory Item
-const PurchasesItemSchema = new mongoose.Schema({
-
-    category: String,
-    quantity: Number,
-    costPerUnit: Number,
-    total_amount: Number,
-    createdAt: { type: Date, default: Date.now }
-});
-// Define schema for Inventory Item Stocks
-const inventoryItemStocksSchema = new mongoose.Schema({
-    category: String,
-    availableStocks: { type: Number, default: 0 },
-    totalCosts: { type: Number, default: 0 }
-});
-
-
-
-// Define schema for Sales
-const salesSchema = new mongoose.Schema({
-    category: String,
-    unitsSold: Number,
-    unitPrice: Number,
-    costPerUnit: Number,
-    amount: Number,
-    profit: Number,
-    clientName: String,
-    clientContact: String,
-    paymentType: String,
+const saleSchema = new Schema({
+    _id: { type: String, default: uuidv4 }, // Unique ID for sale
+    unitsSold: { type: Number, default: 0 },
+    unitPrice: { type: Number, default: 0 },
+    costPerUnit: { type: Number, default: 0 },
+    amount: { type: Number, default: 0 },
+    profit: { type: Number, default: 0 },
+    clientName: { type: String, default: '' },
+    clientContact: { type: String, default: '' },
+    paymentType: { type: String, default: '' },
     soldAt: { type: Date, default: Date.now }
 });
 
-// Create models for Inventory Item and Sales
-const InventoryItem = mongoose.model('InventoryItem', inventoryItemSchema);
-const Sales = mongoose.model('Sales', salesSchema);
-const InventoryItemStocks = mongoose.model('InventoryStock', inventoryItemStocksSchema);
-const PurchasesItem = mongoose.model('InventoryPurchases', PurchasesItemSchema);
+const inventorySchema = new Schema({
+    category: { type: String, required: true },
+    availableStocks: { type: Number, default: 0 },
+    purchases: [purchaseSchema],
+    purchasesHistory: [purchaseSchema],
+    salesHistory: [saleSchema],
+    sales: [saleSchema],
+    createdAt: { type: Date, default: Date.now }
+});
 
+const Inventory = mongoose.model('Inventory', inventorySchema);
 
-// Export models for use in other parts of the application
-module.exports = { InventoryItem, Sales , InventoryItemStocks, PurchasesItem };
-
-
+module.exports = Inventory;

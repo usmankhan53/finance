@@ -22,7 +22,6 @@ export default function Category() {
   const [editCategoryName, setEditCategoryName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [allCategories, setAllCategories] = useState([]);
-  const [stockData, setStockData] = useState({});
   const navigate = useNavigate();
 
   const toggleOpen = (category) => {
@@ -66,7 +65,7 @@ export default function Category() {
         return;
       }
   
-      const response = await fetch('http://localhost:8001/inventory-item-stocks', {
+      const response = await fetch('http://localhost:8001/inventory', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -92,7 +91,7 @@ export default function Category() {
   
   const deleteCategory = async (category) => {
     try {
-      const response = await fetch(`http://localhost:8001/inventory-item-stocks/category/${category}`, {
+      const response = await fetch(`http://localhost:8001/inventory/${category}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -120,8 +119,8 @@ export default function Category() {
         alert("Please enter a valid name");
         throw new Error("Please enter a valid name");
       }
-      const response = await fetch(`http://localhost:8001/inventory-item-stocks/category/${selectedCategory}`, {
-        method: 'PATCH',  // Use PATCH method here
+      const response = await fetch(`http://localhost:8001/inventory/${selectedCategory}`, {
+        method: 'PUT',  // Use PUT method here
         headers: {
           'Content-Type': 'application/json'
         },
@@ -132,7 +131,7 @@ export default function Category() {
         throw new Error('Failed to edit category');
       }
 
-      const updatedCategory = await response.json();
+      // const updatedCategory = await response.json();
       console.log("Category edited successfully!");
       alert("Category edited successfully!");
 
@@ -147,31 +146,17 @@ export default function Category() {
   };
 
   useEffect(() => {
+
     const fetchInventoryCategories = async () => {
       try {
-        const response = await fetch('http://localhost:8001/inventory-item-stocks');
+        const response = await fetch('http://localhost:8001/inventory');
         if (!response.ok) {
           throw new Error('Failed to fetch inventory items');
         }
         const inventoryCategories = await response.json();
         setAllCategories(inventoryCategories);
 
-        // Fetch stock data for each category
-        const stockDataTemp = {};
-        for (let item of inventoryCategories) {
-          try {
-            const stockResponse = await fetch(`http://localhost:8001/inventory-item-stocks/category/${item.category}`);
-            if (!stockResponse.ok) {
-              throw new Error(`Failed to fetch stock for category ${item.category}`);
-            }
-            const stockData = await stockResponse.json();
-            stockDataTemp[item.category] = stockData.availableStocks; // Assuming the API returns a stock field
-          } catch (error) {
-            console.error(`Error fetching stock data for category ${item.category}`, error);
-            stockDataTemp[item.category] = 'Error'; // or handle error as needed
-          }
-        }
-        setStockData(stockDataTemp);
+        
       } catch (error) {
         console.error('Error fetching inventory items:', error);
       }
@@ -208,7 +193,7 @@ export default function Category() {
             <div className="card-body">
               <h2 className="card-title">{item.category}</h2>
               <div className="stock-info">
-                <strong>Available Stock:</strong> {stockData[item.category] !== undefined ? stockData[item.category] : 'Loading...'}
+                <strong>Available Stock:</strong>{item.availableStocks}
               </div>
               <div className="card-buttons">
                 <button className="btn btn-primary" onClick={() => toggleOpen(item.category)}>Go to Inventory</button>

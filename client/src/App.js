@@ -3,12 +3,12 @@ import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'r
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import LoginForm from './pages/Login';
-import InventoryPage from './pages/Inventory';
 import SellPage from './pages/SellPage';
 import BuyPage from './pages/BuyPage';
 import AutoLogout from './component/AutoLogout';
 import SalesTable from './pages/SalesTable';
 import PurchasesTable from './pages/PurchasesTable';
+import Category from './component/Category';
 
 
 function App() {
@@ -46,7 +46,7 @@ function App() {
         />
         <Route
           path="/manageInventories"
-          element={token ? <InventoryPage onLogout={handleLogout} /> : <Navigate to="/" />}
+          element={token ? <Category onLogout={handleLogout} /> : <Navigate to="/" />}
         />
        <Route
           path="/categories/:category"

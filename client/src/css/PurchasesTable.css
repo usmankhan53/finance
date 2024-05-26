@@ -1,6 +1,8 @@
 .purchases-table-container {
     text-align: center;
     margin-top: 20px;
+    width: 1200px;
+    margin-left: 270px;
   }
   
   .purchases-table-container h1 {

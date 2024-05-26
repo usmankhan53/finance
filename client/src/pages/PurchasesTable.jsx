@@ -16,10 +16,10 @@ const PurchasesTable = () => {
   // Fetch sales data from the API
   const fetchPurchasesData = async () => {
     try {
-      const response = await fetch('http://localhost:8001/inventoryPurchases');
+      const response = await fetch(`http://localhost:8001/inventory/${category}`);
       if (!response.ok) throw new Error('Failed to fetch sales data');
       const data = await response.json();
-      setPurchasesData(data.filter(item => item.category === category));
+      setPurchasesData(data.purchasesHistory);
     } catch (error) {
       console.error('Error fetching sales data:', error);
     }
@@ -35,7 +35,7 @@ const PurchasesTable = () => {
   };
 
   const calculateTotalAmount = (PurchaseData) => {
-    return PurchaseData.reduce((total, sale) => total + sale.total_amount, 0);
+    return PurchaseData.reduce((total, sale) => total + sale.totalAmount, 0);
   };
 
   
@@ -59,7 +59,7 @@ const PurchasesTable = () => {
               <td>{key + 1}</td>
               <td>{purchase.quantity}</td>
               <td>{purchase.costPerUnit}</td>
-              <td>{purchase.total_amount}</td>
+              <td>{purchase.totalAmount}</td>
               <td>{formatDate(purchase.createdAt)}</td> {/* Display the Date column with formatted date */}
             </tr>
           ))}

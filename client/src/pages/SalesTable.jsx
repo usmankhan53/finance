@@ -17,10 +17,10 @@ const SalesTable = () => {
   // Fetch sales data from the API
   const fetchSalesData = async () => {
     try {
-      const response = await fetch('http://localhost:8001/sales');
+      const response = await fetch(`http://localhost:8001/inventory/${category}`);
       if (!response.ok) throw new Error('Failed to fetch sales data');
       const data = await response.json();
-      setSalesData(data.filter(item => item.category === category));
+      setSalesData(data.salesHistory);
     } catch (error) {
       console.error('Error fetching sales data:', error);
     }
