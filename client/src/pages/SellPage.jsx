@@ -303,7 +303,7 @@ const SellPage = () => {
       {item && (
   <>
     <h3>Category: {item.category.toUpperCase()} </h3> 
-    <p>Sub Units: {item.quantity}</p>
+    <p>Units Left: {item.quantity}</p>
     <p>Sub Unit Cost: {item.costPerUnit}</p>
     {/* Additional JSX */}
   </>

@@ -50,8 +50,8 @@ const SalesTable = () => {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Buying Price Per Unit</th>
-            <th>Selling Price Per Unit</th>
+            <th>Buying Price</th>
+            <th>Selling Price</th>
             <th>Units Sold</th>
             <th>Amount</th>
             <th>Profit/Loss</th>
