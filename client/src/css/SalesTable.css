@@ -1,17 +1,16 @@
 .sales-table-container {
-    padding: 20px;
+    text-align: center;
+    margin-top: 20px;
   }
   
   .sales-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 1em;
-    text-align: left;
   }
   
   .sales-table th, .sales-table td {
-    padding: 12px 15px;
+    padding: 12px;
+    border: 1px solid #ddd;
   }
   
   .sales-table th {
@@ -53,3 +52,7 @@
     border-top: 2px solid #ddd;
   }
   
+  .sales-table-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }

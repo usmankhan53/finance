@@ -45,7 +45,7 @@ const SalesTable = () => {
 
   return (
     <div className="sales-table-container">
-      <h1>SALES RECORDS OF {category}</h1>
+      <h1>SALES RECORDS OF {category.toUpperCase()}</h1>
       <table className="sales-table">
         <thead>
           <tr>

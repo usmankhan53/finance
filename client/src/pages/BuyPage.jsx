@@ -84,20 +84,30 @@ const BuyPage = () => {
     const apiEndpoint = 'http://localhost:8001/inventory';
     const method = 'POST';
 
-    if (!units || !costPerUnit) {
-      alert("Both Units and Cost per Unit fields are required");
+    if (!units || !costPerUnit || units <= 0 || costPerUnit <= 0) {
+      alert("Units and Cost per Unit must be positive values and both fields are required");
       return;
-  }
+    }
       
    
 
     try {
+
       const response = await fetch(apiEndpoint, {
         method: method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ category, quantity: units, costPerUnit, total_amount: totalAmount }),
       });
       if (!response.ok) throw new Error('Failed to save data');
+
+
+      // Post data to the second API
+    const response2 = await fetch('http://localhost:8001/inventoryPurchases', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ category, quantity: units, costPerUnit, total_amount: totalAmount }),
+    });
+    if (!response2.ok) throw new Error('Failed to post data to inventory Purchases');
 
       // Update stock data
       const updatedStockData = {
@@ -121,6 +131,12 @@ const BuyPage = () => {
       console.error('Error saving data:', error);
     }
   };
+
+
+  // useEffect(() => {
+  //   const filteredInventory = inventory.filter(item => item.quantity !== 0 && item.total_amount !== 0);
+  //   setInventory(filteredInventory);
+  // }, [inventory]);
 
   // const handleEdit = (item) => {
   //   setUnits(item.quantity);
@@ -185,6 +201,10 @@ const BuyPage = () => {
     navigate('addSales', { state: { category, quantity: item.quantity, costPerUnit: item.costPerUnit, _id: item._id } });
   };
 
+  const handlePurchasesTableNavigation = () => {
+    navigate('purchases', {state: {category}});
+  };
+
   const handleSalesTableNavigation = () => {
     navigate(`sales`, {state: {category}});
   };
@@ -199,11 +219,11 @@ const BuyPage = () => {
     return inventory.reduce((total, item) => total + item.quantity, 0);
   };
   
-  const calculateNetCostPerUnit = (inventory) => {
-    // Calculate the average cost per unit in the inventory array
-    const totalCost = inventory.reduce((total, item) => total + item.costPerUnit, 0);
-    return totalCost;
-  };
+  // const calculateNetCostPerUnit = (inventory) => {
+  //   // Calculate the average cost per unit in the inventory array
+  //   const totalCost = inventory.reduce((total, item) => total + item.costPerUnit, 0);
+  //   return totalCost;
+  // };
   
   const calculateNetTotalAmount = (inventory) => {
     // Calculate the sum of total amounts in the inventory array
@@ -218,6 +238,7 @@ const BuyPage = () => {
         <p><strong>Available Stocks:</strong> {availableStocks}</p>
       </div>
       <button onClick={handleSalesTableNavigation} className="sales-table-btn">View All Sales</button>
+      <button onClick={handlePurchasesTableNavigation} className="purchases-table-btn">View All Purchases</button>
       <form onSubmit={handleSubmit} className="form-inline">
         <input
           type="number"
@@ -260,27 +281,32 @@ const BuyPage = () => {
           </tr>
         </thead>
         <tbody>
-          {inventory.map((item,key) => (
-            <tr key={item._id}>
-              <td>{key + 1}</td>
-              <td>{item.quantity}</td>
-              <td>{item.costPerUnit}</td>
-              <td>{item.total_amount}</td>
-              <td>{formatDate(item.createdAt)}</td>
-              <td>
-                <button className="delete-btn" onClick={() => handleDelete(item._id)}>Delete</button>
-                <button className="add-sale-btn" onClick={() => handleAddSale(item)}>Add Sale</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+  {inventory.map((item, key) => (
+    <tr key={item._id}>
+      <td>{key + 1}</td>
+      <td>{item.quantity}</td>
+      <td>{item.costPerUnit}</td>
+      <td>{item.total_amount}</td>
+      <td>{formatDate(item.createdAt)}</td>
+      <td>
+        <button className="delete-btn" onClick={() => handleDelete(item._id)}>Delete</button>
+        {/* Conditionally render the "Add Sale" button based on the quantity */}
+        {item.quantity > 0 ? (
+          <button className="add-sale-btn" onClick={() => handleAddSale(item)}>Add Sale</button>
+        ) : (
+          <button className="add-sale-btn-disable" onClick={() => handleAddSale(item)} disabled>Add Sale</button>
+        )}
+      </td>
+    </tr>
+  ))}
+</tbody>
+
 
         <tfoot>
     <tr>
-      <td>Total Records: {inventory.length}</td>
-      <td>Net Quantity: {calculateNetQuantity(inventory)}</td>
-      <td>Net Cost Per Unit: {calculateNetCostPerUnit(inventory)}</td>
-      <td>Net Total Amount: {calculateNetTotalAmount(inventory)}</td>
+      <td className='footer-cell'>Total Records: {inventory.length}</td>
+      <td className='footer-cell'>Net Quantity: {calculateNetQuantity(inventory)}</td>
+      <td className='footer-cell-net-total' colSpan="2">Net Amount: {calculateNetTotalAmount(inventory)}</td>
     </tr>
   </tfoot>
       </table>

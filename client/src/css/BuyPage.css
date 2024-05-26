@@ -1,6 +1,6 @@
 .inventory-container {
   padding: 20px;
-  max-width: 800px;
+  width: 1400px;
   margin: 30px auto;
   border-radius: 20px;
   border: 2px solid #ddd;
@@ -113,6 +113,16 @@
   margin-right: 5px;
 }
 
+.purchases-table-btn{
+  background-color: #f6e206;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -150,9 +160,24 @@
   padding: 5px 10px;
   margin: 2px;
   border: none;
+  cursor: not-allowed;
+}
+
+.add-sale-btn-disable{
+  background-color: #4CAF50;
+  opacity: 0.4;
+  color: white;
+  padding: 5px 10px;
+  margin: 2px;
+  border: none;
   cursor: pointer;
 }
 
 .delete-btn:hover, .add-sale-btn:hover {
   background-color: #45a049;
+}
+
+.footer-cell-net-total{
+  font-weight: bold;
+  text-align: right;
 }

@@ -1,0 +1,42 @@
+.purchases-table-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .purchases-table-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .purchases-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .purchases-table th,
+  .purchases-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+  }
+
+  .purchases-table tr:nth-child(even) {
+    background-color: #f3f3f3;
+  }
+  
+  .purchases-table tr:nth-child(odd) {
+    background-color: #ffffff;
+  }
+  
+  .purchases-table th {
+    background-color: #f8ec0c;
+  }
+  
+  .purchases-table tfoot td {
+    background-color: #f2f2f2;
+  }
+  
+  .footer-cell {
+    font-weight: bold;
+    text-align: left;
+  }
+  

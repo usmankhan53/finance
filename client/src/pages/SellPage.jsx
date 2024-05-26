@@ -74,11 +74,15 @@ const SellPage = () => {
 
   // Function to update amount and profit
   const updateAmountAndProfit = () => {
+    if(unitPrice) {
+
     const amountValue = unitsSold * unitPrice;
     setAmount(amountValue.toFixed(2));
     const inventoryBasedTotal = unitsSold * costPerUnit;
     const profitValue = amountValue - inventoryBasedTotal;
     setProfit(profitValue.toFixed(2));
+    
+    }
   };
 
   // Calculate total net profit
@@ -223,10 +227,10 @@ const SellPage = () => {
     };
 
     
-    if (!unitsSold || !unitPrice) {
-      alert("Both Units Sold and Unit Price fields are required");
+    if (!unitsSold || !unitPrice || unitsSold <= 0 || unitPrice <= 0) {
+      alert("Units Sold and Unit Price must be positive values and both fields are required");
       return;
-  }
+    }
 
     try {
       const response = await fetch(`http://localhost:8001/sales`, {

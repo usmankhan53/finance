@@ -11,6 +11,15 @@ const inventoryItemSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
+// Define schema for PurchasesInventory Item
+const PurchasesItemSchema = new mongoose.Schema({
+
+    category: String,
+    quantity: Number,
+    costPerUnit: Number,
+    total_amount: Number,
+    createdAt: { type: Date, default: Date.now }
+});
 // Define schema for Inventory Item Stocks
 const inventoryItemStocksSchema = new mongoose.Schema({
     category: String,
@@ -38,9 +47,10 @@ const salesSchema = new mongoose.Schema({
 const InventoryItem = mongoose.model('InventoryItem', inventoryItemSchema);
 const Sales = mongoose.model('Sales', salesSchema);
 const InventoryItemStocks = mongoose.model('InventoryStock', inventoryItemStocksSchema);
+const PurchasesItem = mongoose.model('InventoryPurchases', PurchasesItemSchema);
 
 
 // Export models for use in other parts of the application
-module.exports = { InventoryItem, Sales , InventoryItemStocks };
+module.exports = { InventoryItem, Sales , InventoryItemStocks, PurchasesItem };
 
 

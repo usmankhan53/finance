@@ -8,6 +8,8 @@ import SellPage from './pages/SellPage';
 import BuyPage from './pages/BuyPage';
 import AutoLogout from './component/AutoLogout';
 import SalesTable from './pages/SalesTable';
+import PurchasesTable from './pages/PurchasesTable';
+
 
 function App() {
   const [token, setToken] = useState(null);
@@ -58,6 +60,11 @@ function App() {
      <Route
           path="/categories/:category/sales"
           element={token ? <SalesTable onLogout={handleLogout} /> : <Navigate to="/" />}
+      />
+
+    <Route
+          path="/categories/:category/purchases"
+          element={token ? <PurchasesTable onLogout={handleLogout} /> : <Navigate to="/" />}
       />
 
       </Routes>

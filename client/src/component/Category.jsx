@@ -55,10 +55,17 @@ export default function Category() {
   const addCategory = async (e) => {
     e.preventDefault();
     try {
-      if (!newCategory) {
+      if (!newCategory) { 
         alert("Please enter a valid name");
         throw new Error("Please enter a valid name");
       }
+  
+      // Check for duplicate category
+      if (allCategories.some(category => category.category.toLowerCase() === newCategory.toLowerCase())) {
+        alert("This category already exists. Please enter a new category.");
+        return;
+      }
+  
       const response = await fetch('http://localhost:8001/inventory-item-stocks', {
         method: 'POST',
         headers: {
@@ -66,23 +73,23 @@ export default function Category() {
         },
         body: JSON.stringify({ category: newCategory })
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to add new category');
       }
-
+  
       const responseData = await response.json();
       console.log("New category added successfully!");
       alert("New category added successfully!");
       console.log(responseData);
-
+  
       setAllCategories((prevCategories) => [...prevCategories, responseData]);
       setNewCategory(''); // Clear input field
     } catch (error) {
       console.error('Error adding new category:', error);
     }
   };
-
+  
   const deleteCategory = async (category) => {
     try {
       const response = await fetch(`http://localhost:8001/inventory-item-stocks/category/${category}`, {

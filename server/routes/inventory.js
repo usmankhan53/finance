@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { InventoryItem, Sales , InventoryItemStocks } = require('../model/Inventory');
+const { InventoryItem, Sales , InventoryItemStocks, PurchasesItem } = require('../model/Inventory');
 // const moment = require('moment');
 
 
@@ -99,6 +99,94 @@ router.delete('/inventory/:category', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+
+/* CRUD OPERATION OF PURCHASES INVENTORY */
+
+// Create an Purchase item
+router.post('/inventoryPurchases', async (req, res) => {
+    try {
+        const { category, quantity, costPerUnit, total_amount } = req.body;
+        const newItem = new PurchasesItem({ category, quantity, costPerUnit, total_amount });
+        await newItem.save();
+        res.status(201).json(newItem);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+// READ: Get all purchase items
+router.get('/inventoryPurchases', async (req, res) => {
+    try {
+        const items = await PurchasesItem.find();
+        res.status(200).json(items);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// READ: Get a single purchase item
+router.get('/inventoryPurchases/:id', getPurchaseItem, (req, res) => {
+    res.json(res.item);
+});
+
+// UPDATE: Update a purchase item
+router.patch('/inventoryPurchases/:id', getPurchaseItem, async (req, res) => {
+    if (req.body.category != null) {
+        res.item.category = req.body.category;
+    }
+    if (req.body.quantity != null) {
+        res.item.quantity = req.body.quantity;
+    }
+    if (req.body.costPerUnit != null) {
+        res.item.costPerUnit = req.body.costPerUnit;
+    }
+    if (req.body.total_amount != null) {
+        res.item.total_amount = req.body.total_amount;
+    }
+    try {
+        const updatedItem = await res.item.save();
+        res.json(updatedItem);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+// Delete an Purchase item
+
+router.delete('/inventoryPurchases/:id', async (req, res) => {
+    try {
+        const itemId = req.params.id;
+        const itemToDelete = await PurchasesItem.findByIdAndDelete(itemId);
+
+        if (!itemToDelete) {
+            return res.status(404).json({ message: 'Item not found' });
+        }
+
+        res.json({ message: 'Item deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+
+
+// Middleware function to get purchase item by ID
+async function getPurchaseItem(req, res, next) {
+    let item;
+    try {
+        item = await PurchasesItem.findById(req.params.id);
+        if (item == null) {
+            return res.status(404).json({ message: 'Purchase item not found' });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+
+    res.item = item;
+    next();
+}
+
 
 
 
