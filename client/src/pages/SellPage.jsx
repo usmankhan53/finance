@@ -74,7 +74,12 @@ const SellPage = () => {
 
   // Function to update amount and profit
   const updateAmountAndProfit = () => {
-    if(unitPrice) {
+
+    if (!unitPrice) {
+      setAmount('');
+      setProfit('');
+      return;
+  }
 
     const amountValue = unitsSold * unitPrice;
     setAmount(amountValue.toFixed(2));
@@ -82,7 +87,7 @@ const SellPage = () => {
     const profitValue = amountValue - inventoryBasedTotal;
     setProfit(profitValue.toFixed(2));
     
-    }
+    
   };
 
   // Calculate total net profit
@@ -198,7 +203,7 @@ const SellPage = () => {
       }
   
       
-      alert("Update successful");
+      alert("Sale added succesfully");
       
     } catch (error) {
       alert(`Failed to update: ${error.message}`);
@@ -258,8 +263,7 @@ const SellPage = () => {
         let totalU =  quantityU * costPerUnit;
       
 
-      alert(quantityU);
-      alert(totalU);
+     
 
       const subStockUpdate = {
         quantity: quantityU,

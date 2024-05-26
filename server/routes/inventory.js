@@ -6,17 +6,79 @@ const { InventoryItem, Sales , InventoryItemStocks, PurchasesItem } = require('.
 
 /* CRUD OPERATION FOR INVENTORY */
 
-// Create an inventory item
-router.post('/inventory', async (req, res) => {
+// Update stocks and total cost when a new inventory item is added
+router.post('/inventory', async (req, res, next) => {
     try {
         const { category, quantity, costPerUnit, total_amount } = req.body;
         const newItem = new InventoryItem({ category, quantity, costPerUnit, total_amount });
         await newItem.save();
+
+        // Update stock and total cost
+        await updateStockAndCost(category, quantity, total_amount);
+
         res.status(201).json(newItem);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 });
+
+// Delete an inventory item
+router.delete('/inventory/:category', async (req, res, next) => {
+    try {
+        const category = req.params.category;
+
+        // Get the deleted inventory item
+        const deletedItem = await InventoryItem.findOneAndDelete({ category });
+
+        if (!deletedItem) {
+            return res.status(404).json({ message: 'Item not found' });
+        }
+
+        // Update stock and total cost
+        await removeStockAndCost(category, deletedItem.quantity, deletedItem.total_amount);
+
+        res.json({ message: 'Item deleted' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Function to update stocks and total cost
+const updateStockAndCost = async (category, quantity, total_amount) => {
+    try {
+        const stockDoc = await InventoryItemStocks.findOne({ category });
+        if (stockDoc) {
+            stockDoc.availableStocks += quantity;
+            stockDoc.totalCosts += total_amount;
+            await stockDoc.save();
+        } else {
+            await InventoryItemStocks.create({
+                category,
+                availableStocks: quantity,
+                totalCosts: total_amount
+            });
+        }
+    } catch (error) {
+        console.error('Error updating stock and cost:', error.message);
+    }
+};
+
+// Function to remove stocks and total cost
+const removeStockAndCost = async (category, quantity, total_amount) => {
+    try {
+        const stockDoc = await InventoryItemStocks.findOne({ category });
+        if (stockDoc) {
+            stockDoc.availableStocks -= quantity;
+            stockDoc.totalCosts -= total_amount;
+            await stockDoc.save();
+        }
+    } catch (error) {
+        console.error('Error removing stock and cost:', error.message);
+    }
+};
+
+
+
 
 
 // Read all inventory items
@@ -89,16 +151,21 @@ router.get('/inventory/id/:id', async (req, res) => {
     }
 });
 
-
-// Delete an inventory item
-router.delete('/inventory/:category', async (req, res) => {
+// Delete all inventory items by category
+router.delete('/inventory/all/:category', async (req, res) => {
     try {
-        await InventoryItem.findOneAndDelete({ category: req.params.category });
-        res.json({ message: 'Item deleted' });
+        const result = await InventoryItem.deleteMany({ category: req.params.category });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: 'No items found in this category' });
+        }
+
+        res.json({ message: 'Items deleted successfully', deletedCount: result.deletedCount });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
+
 
 
 /* CRUD OPERATION OF PURCHASES INVENTORY */
@@ -164,6 +231,22 @@ router.delete('/inventoryPurchases/:id', async (req, res) => {
         }
 
         res.json({ message: 'Item deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Delete all inventory purchases by category
+router.delete('/inventoryPurchases/all/:category', async (req, res) => {
+    try {
+        const category = req.params.category;
+        const result = await PurchasesItem.deleteMany({ category: category });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: 'No items found in this category' });
+        }
+
+        res.json({ message: 'Items deleted successfully', deletedCount: result.deletedCount });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -258,6 +341,17 @@ router.delete('/sales/:category', async (req, res) => {
     }
 });
 
+// Delete all sales by category
+router.delete('/sales/all/:category', async (req, res) => {
+    try {
+        const result = await Sales.deleteMany({ category: req.params.category });
+        res.json({ message: 'Sales deleted', deletedCount: result.deletedCount });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+
 
 /* STOCKS CRUD OPERATION */
 
@@ -322,6 +416,10 @@ router.delete('/inventory-item-stocks/category/:category', async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
+
+
+
+
 
 
 

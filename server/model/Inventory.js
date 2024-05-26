@@ -3,11 +3,10 @@ const mongoose = require('mongoose');
 
 // Define schema for Inventory Item
 const inventoryItemSchema = new mongoose.Schema({
-
     category: String,
-    quantity: Number,
-    costPerUnit: Number,
-    total_amount: Number,
+    quantity: { type: Number, default: 0 }, // Set default value for quantity
+    costPerUnit: { type: Number, default: 0 }, // Set default value for costPerUnit
+    total_amount: { type: Number, default: 0 }, // Set default value for total_amount
     createdAt: { type: Date, default: Date.now }
 });
 
