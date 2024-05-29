@@ -1,49 +1,54 @@
-const  mongo = require('mongoose');
-const  bodyParser = require('body-parser')
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const express = require('express');
-const cookieParser= require('cookie-parser');
+const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const  cors = require("cors");
-
+const cors = require('cors');
 
 const app = express();
 
-
-
+// Database connection
 const DB = "mongodb+srv://usman53538:mypassword@cluster0.ezk4knw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-mongo.connect(DB).then(()=>{
-    console.log("connected to database !")
-}).catch(()=>{
-    console.log("Not connected!");
+mongoose.connect(DB, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+}).then(() => {
+    console.log("Connected to database!");
+}).catch((err) => {
+    console.error("Not connected!", err);
 });
 
-app.use(cors(
-    {
-        origin: ["https://finance-snowy-ten.vercel.app"],
-        methods: ["POST", "GET"],
-        credentials: true
-    }
-));
+// CORS configuration
+const corsOptions = {
+    origin: ["https://finance-snowy-ten.vercel.app"],
+    methods: ["POST", "GET"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+    optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+};
+
+app.use(cors(corsOptions));
+
+// Middleware setup
 app.use(logger('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
-// Use Routes
-app.use(require('./routes/user'));
-app.use(require('./routes/inventory'));
-app.use(require('./routes/vendor'));
+// Routes setup
+app.use('/user', require('./routes/user'));
+app.use('/inventory', require('./routes/inventory'));
+app.use('/vendor', require('./routes/vendor'));
 
+// Handling preflight requests
+app.options('*', cors(corsOptions));
 
-
-
-
-
-
-app.listen(8001,()=>{
-    console.log("Your server is running on port 8001");
+// Start server
+const PORT = 8001;
+app.listen(PORT, () => {
+    console.log(`Your server is running on port ${PORT}`);
 });
 
-module.exports =app;
+module.exports = app;
