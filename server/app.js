@@ -28,6 +28,7 @@ app.use(express.json());
 // Use Routes
 app.use(require('./routes/user'));
 app.use(require('./routes/inventory'));
+app.use(require('./routes/vendor'));
 
 
 

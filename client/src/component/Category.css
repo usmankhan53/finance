@@ -25,6 +25,42 @@
 
 
 
+/* Vendor container section positioned at the top right */
+.vendor-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+/* Button styles */
+.add-vendor-btn {
+  background-color: #b19a34;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.statments-btn{
+  background-color: #548750;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+
+.add-vendor-btn:hover, .statments-btn:hover {
+  background-color: #0056b3;
+}
+
 .container-input-category {
   display: flex;
   justify-content: center;
@@ -89,4 +125,10 @@
 
 .new-text-style {
   color: white;
+}
+
+
+.vendor-container{
+  margin-left: 80%;
+
 }

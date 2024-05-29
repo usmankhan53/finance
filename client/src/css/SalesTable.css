@@ -1,24 +1,28 @@
 .sales-table-container {
+    padding: 20px;
     text-align: center;
-    margin-top: 20px;
-    width: fit-content;
-    margin-left: 210px;
+    margin-top: 0;
+
   }
   
   .sales-table {
     width: 100%;
     border-collapse: collapse;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
   .sales-table th, .sales-table td {
     padding: 12px;
     border: 1px solid #ddd;
+    text-align: center;
   }
   
   .sales-table th {
     background-color: #009879;
     color: white;
   }
+
   
   .sales-table tr:nth-child(even) {
     background-color: #f3f3f3;
@@ -55,6 +59,9 @@
   }
   
   .sales-table-container h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
+    background-color: #009879;
+    margin-bottom: 1px;
+    color: white;
+    padding: 20px;
+    border-radius: 30px;
   }

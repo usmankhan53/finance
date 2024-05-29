@@ -5,10 +5,9 @@ import dayjs from 'dayjs'; // Import dayjs for date manipulation
 
 const SellPage = () => {
   const location = useLocation();
-  const { category, quantity, costPerUnit, _id } = location.state || {};
+  const { category,costPerUnit, _id } = location.state || {};
 
   const [unitsSold, setUnitsSold] = useState('');
-  const [item, setItem] = useState(null);
   const [unitPrice, setUnitPrice] = useState('');
   const [amount, setAmount] = useState('');
   const [profit, setProfit] = useState('');
@@ -23,27 +22,7 @@ const SellPage = () => {
   const [exceedingStocks, setExceedingStocks] = useState(false);
   const [dateFilter, setDateFilter] = useState('all');
 
-  
-  
-  // useEffect(() => {
-  //   const fetchItem = async () => {
-  //     try {
-  //       const response = await fetch(`http://localhost:8001/inventory/id/${_id}`);
-  //       if (!response.ok) {
-  //         throw new Error('Failed to fetch data');
-  //       }
-  //       const data = await response.json();
-  //       setItem(data);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-
-  //   fetchItem();
-  // }, []);
-
-
- 
+   
     // Fetch sales data from the API
   const fetchSalesData = async () => {
     try {
@@ -335,7 +314,7 @@ const handleUnitsSoldChange = (e) => {
               <td className={sale.profit < 0 ? 'negative-profit' : sale.profit > 0 ? 'positive-profit' : ''}>{sale.profit}</td>
               <td>{sale.clientName}</td>
               <td>{sale.clientContact}</td>
-              <td className={sale.paymentType == "Unpaid" ? 'orange-light': ''}>{sale.paymentType}</td>
+              <td className={sale.paymentType === "Unpaid" ? 'orange-light': ''}>{sale.paymentType}</td>
               <td>
                 <button className='delete-btn' onClick={() => handleDeleteSale(sale._id)}>Delete</button>
               </td>

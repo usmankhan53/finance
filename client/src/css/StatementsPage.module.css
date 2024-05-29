@@ -1,0 +1,43 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    gap: 20px; /* Space between buttons */
+    background-color: #f0f0f0; /* Light background for better visibility */
+  }
+  
+  .button {
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .button:hover {
+    background-color: #ddd;
+    transform: scale(1.05);
+  }
+  
+  .button:active {
+    transform: scale(0.95);
+  }
+  
+  .button:nth-child(1) {
+    background-color: #ff6961; /* Red color for Unpaid */
+    color: white;
+  }
+  
+  .button:nth-child(2) {
+    background-color: #77dd77; /* Green color for Paid */
+    color: white;
+  }
+  
+  .button:nth-child(3) {
+    background-color: #779ecb; /* Blue color for Bank */
+    color: white;
+  }
+  

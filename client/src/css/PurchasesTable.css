@@ -1,24 +1,32 @@
 .purchases-table-container {
-    text-align: center;
-    margin-top: 20px;
-    width: 1200px;
-    margin-left: 270px;
+  padding: 20px;
+  text-align: center;
+  margin-top: 0;
   }
   
   .purchases-table-container h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
+    background-color: #f8ec0c;
+    margin-bottom: 3px;
+    color: black;
+    padding: 20px;
+    border: 4px solid black;
+    border-radius: 30px;
+  
   }
   
   .purchases-table {
     width: 100%;
     border-collapse: collapse;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    
   }
   
   .purchases-table th,
   .purchases-table td {
-    padding: 8px;
+    padding: 12px;
     border: 1px solid #ddd;
+    text-align: center;
   }
 
   .purchases-table tr:nth-child(even) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import LoginForm from './pages/Login';
@@ -9,7 +9,12 @@ import AutoLogout from './component/AutoLogout';
 import SalesTable from './pages/SalesTable';
 import PurchasesTable from './pages/PurchasesTable';
 import Category from './component/Category';
-
+import VendorsPage from './pages/VendorsPage';
+import StatementsPage from './pages/StatementsPage';
+import VendorAddSales from './pages/VendorAddSales';
+import Cash from './pages/balanceSheets/Cash';
+import Unpaid from './pages/balanceSheets/Unpaid';
+import Bank from './pages/balanceSheets/Bank';
 
 function App() {
   const [token, setToken] = useState(null);
@@ -66,6 +71,35 @@ function App() {
           path="/categories/:category/purchases"
           element={token ? <PurchasesTable onLogout={handleLogout} /> : <Navigate to="/" />}
       />
+    
+    <Route
+          path="/vendors"
+          element={token ? <VendorsPage onLogout={handleLogout} /> : <Navigate to="/" />}
+      />
+
+    <Route
+          path="/statments"
+          element={token ? <StatementsPage onLogout={handleLogout} /> : <Navigate to="/" />}
+    />
+
+    <Route
+          path="/vendors/vendorAddSale/:vendorName"
+          element={token ? <VendorAddSales onLogout={handleLogout} /> : <Navigate to="/" />}
+     /> 
+    
+    <Route
+          path="/statments/Banks"
+          element={token ? <Bank onLogout={handleLogout} /> : <Navigate to="/" />}
+     /> 
+      <Route
+          path="/statments/Unpaid"
+          element={token ? <Unpaid onLogout={handleLogout} /> : <Navigate to="/" />}
+     /> 
+
+    <Route
+          path="/statments/Cash"
+          element={token ? <Cash onLogout={handleLogout} /> : <Navigate to="/" />}
+     /> 
 
       </Routes>
     </Router>
