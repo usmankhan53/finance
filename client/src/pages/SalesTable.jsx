@@ -17,7 +17,7 @@ const SalesTable = () => {
   // Fetch sales data from the API
   const fetchSalesData = async () => {
     try {
-      const response = await fetch(`http://localhost:8001/inventory/${category}`);
+      const response = await fetch(`https://finance-backend-xi.vercel.app/inventory/${category}`);
       if (!response.ok) throw new Error('Failed to fetch sales data');
       const data = await response.json();
       setSalesData(data.salesHistory);

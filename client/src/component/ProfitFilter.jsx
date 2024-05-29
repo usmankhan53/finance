@@ -6,7 +6,7 @@ const ProfitFilter = () => {
 
   const fetchProfitForPeriod = async (selectedPeriod) => {
     try {
-      const response = await fetch(`http://localhost:8001/profit?period=${selectedPeriod}`);
+      const response = await fetch(`https://finance-backend-xi.vercel.app/profit?period=${selectedPeriod}`);
       if (!response.ok) {
         throw new Error('Failed to fetch profit for the period');
       }

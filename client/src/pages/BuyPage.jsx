@@ -17,7 +17,7 @@ const BuyPage = () => {
   const fetchInventory = async () => {
     try {
 
-      const response = await fetch(`http://localhost:8001/inventory/${category}`);
+      const response = await fetch(`https://finance-backend-xi.vercel.app/inventory/${category}`);
 
       if (!response.ok) throw new Error('Failed to fetch inventory');
 
@@ -57,7 +57,7 @@ const BuyPage = () => {
       return;
     }
     
-    const apiEndpoint = `http://localhost:8001/purchase/${category}`;
+    const apiEndpoint = `https://finance-backend-xi.vercel.app/purchase/${category}`;
     const method = 'PUT';
   
     try {
@@ -107,7 +107,7 @@ const BuyPage = () => {
   
     if (userResponse === "Yes") {
       try {
-        const response = await fetch(`http://localhost:8001/purchase/${category}/${purchaseId}`, {
+        const response = await fetch(`https://finance-backend-xi.vercel.app/purchase/${category}/${purchaseId}`, {
           method: 'PUT',
         });
   

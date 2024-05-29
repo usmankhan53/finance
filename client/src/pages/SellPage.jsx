@@ -26,7 +26,7 @@ const SellPage = () => {
     // Fetch sales data from the API
   const fetchSalesData = async () => {
     try {
-      const response = await fetch(`http://localhost:8001/inventory/${category}`);
+      const response = await fetch(`https://finance-backend-xi.vercel.app/inventory/${category}`);
       if (!response.ok) throw new Error('Failed to fetch sales data');
       const data = await response.json();
       console.log(data);
@@ -111,7 +111,7 @@ useEffect(()=>{
 
     if (userResponse === "Yes") {
         try {
-            const response = await fetch(`http://localhost:8001/deletesale/${category}/${saleId}`, {
+            const response = await fetch(`https://finance-backend-xi.vercel.app/deletesale/${category}/${saleId}`, {
                 method: 'PUT',
             });
 
@@ -163,7 +163,7 @@ const handleUnitsSoldChange = (e) => {
     }
     
     try {
-      const response = await fetch(`http://localhost:8001/sales/${category}/${_id}`, {
+      const response = await fetch(`https://finance-backend-xi.vercel.app/sales/${category}/${_id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

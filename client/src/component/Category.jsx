@@ -74,7 +74,7 @@ export default function Category() {
         return;
       }
   
-      const response = await fetch('http://localhost:8001/inventory', {
+      const response = await fetch('https://finance-backend-xi.vercel.app/inventory', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -100,7 +100,7 @@ export default function Category() {
   
   const deleteCategory = async (category) => {
     try {
-      const response = await fetch(`http://localhost:8001/inventory/${category}`, {
+      const response = await fetch(`https://finance-backend-xi.vercel.app/inventory/${category}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -128,7 +128,7 @@ export default function Category() {
         alert("Please enter a valid name");
         throw new Error("Please enter a valid name");
       }
-      const response = await fetch(`http://localhost:8001/inventory/${selectedCategory}`, {
+      const response = await fetch(`https://finance-backend-xi.vercel.app/inventory/${selectedCategory}`, {
         method: 'PUT',  // Use PUT method here
         headers: {
           'Content-Type': 'application/json'
@@ -158,7 +158,7 @@ export default function Category() {
 
     const fetchInventoryCategories = async () => {
       try {
-        const response = await fetch('http://localhost:8001/inventory');
+        const response = await fetch('https://finance-backend-xi.vercel.app/inventory');
         if (!response.ok) {
           throw new Error('Failed to fetch inventory items');
         }
@@ -264,7 +264,7 @@ export default function Category() {
       <MDBFooter bgColor='light' className='footer-category'>
         <div className='text-center new-text-style p-3' style={{ backgroundColor: '#139c49' }}>
         &copy; {new Date().getFullYear()} Copyright:{' '}
-          <a className='text-white' href='https://mdbootstrap.com/'>
+          <a className='text-white' href='https://techxudo.com/'>
             Developed and Managed By techxudo.com
           </a>
         </div>

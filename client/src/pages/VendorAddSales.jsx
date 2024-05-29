@@ -23,7 +23,7 @@ const VendorAddSales = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:8001/inventory');
+      const response = await fetch('https://finance-backend-xi.vercel.app/inventory');
       if (response.ok) {
         const data = await response.json();
         setCategories(data);
@@ -86,7 +86,7 @@ const VendorAddSales = () => {
     try {
       // Send form data to APIs
       await Promise.all([
-        fetch(`http://localhost:8001/sales/${category}/${purchases[selectedRow]?._id}`, {
+        fetch(`https://finance-backend-xi.vercel.app/sales/${category}/${purchases[selectedRow]?._id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ const VendorAddSales = () => {
             paymentType: newRecord.paymentStatus,
           }),
         }),
-        fetch(`http://localhost:8001/vendor/${vendorName}`, {
+        fetch(`https://finance-backend-xi.vercel.app/vendor/${vendorName}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

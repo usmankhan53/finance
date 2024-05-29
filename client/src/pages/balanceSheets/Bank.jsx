@@ -10,7 +10,7 @@ function Bank() {
 
   const fetchVendors = async () => {
     try {
-      const response = await fetch('http://localhost:8001/vendor');
+      const response = await fetch('https://finance-backend-xi.vercel.app/vendor');
       if (response.ok) {
         const data = await response.json();
         const records = data.flatMap(vendor => 
