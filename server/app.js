@@ -17,13 +17,14 @@ mongo.connect(DB).then(()=>{
     console.log("Not connected!");
 });
 
-app.use(cors(
-    {
-        origin: ["https://finance-snowy-ten.vercel.app"],
-        methods: ["POST", "GET"],
-        credentials: true
-    }
-));
+// CORS configuration
+app.use(cors({
+    origin: ["https://finance-snowy-ten.vercel.app"],
+    methods: ["POST", "GET"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
+}));
+
 app.use(logger('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
