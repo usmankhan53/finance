@@ -17,7 +17,13 @@ mongo.connect(DB).then(()=>{
     console.log("Not connected!");
 });
 
-app.use(cors());
+app.use(cors(
+    {
+        origin: ["https://finance-snowy-ten.vercel.app"],
+        methods: ["POST", "GET"],
+        credentials: true
+    }
+));
 app.use(logger('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
