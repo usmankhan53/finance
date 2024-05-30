@@ -11,6 +11,7 @@ const BuyPage = () => {
   const [units, setUnits] = useState('');
   const [costPerUnit, setCostPerUnit] = useState('');
   const [totalAmount, setTotalAmount] = useState('');
+  const [paymentType, setPaymentType] = useState('Cash');
   const [availableStocks, setAvailableStocks] = useState('');
 
   
@@ -62,8 +63,10 @@ const BuyPage = () => {
   
     try {
       const purchaseData = {
+        Category: category,
         quantity: units,
-        costPerUnit: costPerUnit
+        costPerUnit: costPerUnit,
+        paymentType: paymentType
       };
   
       const response = await fetch(apiEndpoint, {
@@ -80,6 +83,7 @@ const BuyPage = () => {
       setUnits('');
       setCostPerUnit('');
       setTotalAmount('');
+      alert("New inventory added successfully!")
       fetchInventory();
       
     } catch (error) {
@@ -188,6 +192,12 @@ const BuyPage = () => {
           readOnly
           className="input-field"
         />
+        <select className='input-field' value={paymentType} onChange={(e) => setPaymentType(e.target.value)}>
+          <option value="Unpaid">Unpaid</option>
+          <option value="Cash">Cash</option>
+          <option value="Bank">Bank</option>
+         
+        </select>
         <button type="submit" className="submit-btn">
           Add
         </button>
@@ -200,6 +210,7 @@ const BuyPage = () => {
             <th>Units</th>
             <th>Cost per Unit</th>
             <th>Total Amount</th>
+            {/* <th>Payment Type</th> */}
             <th>Created At</th>
             <th>Actions</th>
           </tr>
@@ -211,6 +222,7 @@ const BuyPage = () => {
       <td>{item.quantity}</td>
       <td>{item.costPerUnit}</td>
       <td>{item.totalAmount}</td>
+      {/* <td>{item.paymentType}</td> */}
       <td>{formatDate(item.createdAt)}</td>
       <td>
         <button className="delete-btn" onClick={() => handleDelete(item._id)}>Delete</button>

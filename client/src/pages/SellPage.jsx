@@ -167,6 +167,7 @@ const handleUnitsSoldChange = (e) => {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+         Category: category,
           unitsSold,
           unitPrice,
           clientName,

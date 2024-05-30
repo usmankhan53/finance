@@ -21,7 +21,7 @@ function Unpaid() {
         );
         setUnpaidRecords(records);
       } else {
-        console.error('Failed to fetch vendors');
+        console.error('Failed to fetch vendors'); 
       }
     } catch (error) {
       console.error('Error fetching vendors:', error);

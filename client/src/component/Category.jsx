@@ -59,6 +59,10 @@ export default function Category() {
     navigate(path);
   }
 
+  const handleSalesStatemnts = (path) => {
+    navigate(path);
+  }
+
 
   const addCategory = async (e) => {
     e.preventDefault();
@@ -176,14 +180,16 @@ export default function Category() {
 
   return (
     <div className='category-container-full'>
-     
+      <button className='purchase-statments-btn'  onClick={() => handleSalesStatemnts('/PurchaseStatements')}>Purchase Statments <MDBIcon fas icon="money-check-alt" /></button>
+      <button className='statments-btn'  onClick={() => handleStatemnts('/statments')}>Sales Statments <MDBIcon fas icon="money-check-alt" /></button>
       <div className="business-container">
         <h1 className="business-name">Dr.Faheem Inventory System</h1>
       </div>
-
+     
       <div className="vendor-container">
        <button className="add-vendor-btn"  onClick={() => handleVendors('/vendors')}>Vendors <MDBIcon fas icon="users" /></button>
-       <button className='statments-btn'  onClick={() => handleStatemnts('/statments')}>Statments <MDBIcon fas icon="money-check-alt" /></button>
+
+
       </div>
 
       <div className="container-center">

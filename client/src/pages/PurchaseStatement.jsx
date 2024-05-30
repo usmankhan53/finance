@@ -1,21 +1,21 @@
 import React from 'react';
 import {useNavigate } from 'react-router-dom';
-import styles from '../css/StatementsPage.module.css';
+import styles from '../css/PurchaseStatement.module.css';
 
-function StatementsPage() {
+function PurchaseStatement() {
 
   const naviagte = useNavigate();
 
   const handleBank = () => {
-     naviagte("/SalesStatments/Banks");
+     naviagte("/PurchaseStatements/Banks");
   }
 
   const handleUnpaid = () => {
-    naviagte("/SalesStatments/Unpaid");
+    naviagte("/PurchaseStatements/Unpaid");
  }
 
  const handlePaid = () => {
-  naviagte("/SalesStatments/Cash");
+  naviagte("/PurchaseStatements/Cash");
  }
 
   return (
@@ -27,4 +27,4 @@ function StatementsPage() {
   );
 }
 
-export default StatementsPage;
+export default PurchaseStatement;

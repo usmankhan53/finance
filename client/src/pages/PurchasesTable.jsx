@@ -50,6 +50,7 @@ const PurchasesTable = () => {
             <th>Number of Units</th>
             <th>Cost Per Unit</th>
             <th>Amount</th>
+            <th>Payment Type</th>
             <th>Date</th> {/* New column for Date */}
           </tr>
         </thead>
@@ -60,6 +61,7 @@ const PurchasesTable = () => {
               <td>{purchase.quantity}</td>
               <td>{purchase.costPerUnit}</td>
               <td>{purchase.totalAmount}</td>
+              <td>{purchase.paymentType}</td>
               <td>{formatDate(purchase.createdAt)}</td> {/* Display the Date column with formatted date */}
             </tr>
           ))}

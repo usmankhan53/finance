@@ -15,6 +15,10 @@ import VendorAddSales from './pages/VendorAddSales';
 import Cash from './pages/balanceSheets/Cash';
 import Unpaid from './pages/balanceSheets/Unpaid';
 import Bank from './pages/balanceSheets/Bank';
+import PurchaseStatement from './pages/PurchaseStatement';
+import CashPurchase from './pages/PurchaseBalanceSheets/CashPurchase';
+import BankPurchase from './pages/PurchaseBalanceSheets/BankPurchase';
+import UnpaidPurchase from './pages/PurchaseBalanceSheets/UnpaidPurchase';
 
 function App() {
   const [token, setToken] = useState(null);
@@ -88,19 +92,41 @@ function App() {
      /> 
     
     <Route
-          path="/statments/Banks"
+          path="/SalesStatments/Banks"
           element={token ? <Bank onLogout={handleLogout} /> : <Navigate to="/" />}
      /> 
       <Route
-          path="/statments/Unpaid"
+          path="/SalesStatments/Unpaid"
           element={token ? <Unpaid onLogout={handleLogout} /> : <Navigate to="/" />}
      /> 
 
     <Route
-          path="/statments/Cash"
+          path="/SalesStatments/Cash"
           element={token ? <Cash onLogout={handleLogout} /> : <Navigate to="/" />}
      /> 
 
+    <Route
+          path="/PurchaseStatements"
+          element={token ? <PurchaseStatement onLogout={handleLogout} /> : <Navigate to="/" />}
+    />
+
+    
+    <Route
+          path="/PurchaseStatements/Cash"
+          element={token ? <CashPurchase onLogout={handleLogout} /> : <Navigate to="/" />}
+    />
+
+    
+    <Route
+          path="/PurchaseStatements/Banks"
+          element={token ? <BankPurchase onLogout={handleLogout} /> : <Navigate to="/" />}
+    />
+
+    
+    <Route
+          path="/PurchaseStatements/Unpaid"
+          element={token ? <UnpaidPurchase onLogout={handleLogout} /> : <Navigate to="/" />}
+     />
       </Routes>
     </Router>
   );

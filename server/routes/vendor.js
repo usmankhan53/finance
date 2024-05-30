@@ -63,7 +63,7 @@ router.put('/vendor/:vendorName/:recordId', async (req, res) => {
   const { vendorName, recordId } = req.params;
   const { paymentStatus } = req.body; // Assuming you are only updating the paymentStatus for now
 
-  try {
+  try { 
       // Find the vendor by vendorName
       const vendor = await Vendor.findOne({ name: vendorName });
       

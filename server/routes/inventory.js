@@ -84,7 +84,7 @@ router.delete('/inventory/:category', async (req, res) => {
 router.put('/purchase/:category', async (req, res) => {
     try {
       const { category } = req.params;
-      const { quantity, costPerUnit } = req.body;
+      const { Category, quantity, costPerUnit , paymentType } = req.body;
   
       // Find the inventory item by category
       let inventoryItem = await Inventory.findOne({ category });
@@ -98,9 +98,11 @@ router.put('/purchase/:category', async (req, res) => {
   
       // Create new purchase record
       const purchaseRecord = {
+        Category,
         quantity,
         costPerUnit,
-        totalAmount
+        totalAmount,
+        paymentType,
       };
   
       // Add the purchase record to the purchases array
@@ -167,7 +169,7 @@ router.put('/purchase/:category/:purchaseId', async (req, res) => {
 router.put('/sales/:category/:purchaseId', async (req, res) => {
     try {
       const { category, purchaseId } = req.params;
-      const { unitsSold, unitPrice, clientName, clientContact, paymentType } = req.body;
+      const { Category, unitsSold, unitPrice, clientName, clientContact, paymentType } = req.body;
   
       // Find the inventory item by category
       let inventoryItem = await Inventory.findOne({ category });
@@ -198,6 +200,7 @@ router.put('/sales/:category/:purchaseId', async (req, res) => {
   
       // Add the sales record to the sales array
       const saleRecord = {
+        Category,
         unitsSold,
         unitPrice,
         costPerUnit: purchaseRecord.costPerUnit,
@@ -225,6 +228,47 @@ router.put('/sales/:category/:purchaseId', async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   });
+
+// Define the PUT route to update a specific vendor record
+router.put('/inventory/PaymentUpdate/:Category/:recordId', async (req, res) => {
+  const { Category, recordId } = req.params;
+  const { paymentType } = req.body; // Assuming you are only updating the paymentType for now
+
+  try { 
+      // Find the vendor by vendorName
+      const inventory = await Inventory.findOne({ category: Category });
+      console.log(inventory);
+      if (!inventory) {
+          return res.status(404).json({ message: 'Inventory not found' });
+      }
+
+      // Find the specific record by _id
+      // const recordPurchases = inventory.purchases.id(recordId);
+      const recordPurchasesHistory = inventory.purchasesHistory.id(recordId);
+
+    
+      console.log(recordPurchasesHistory);
+
+      if (!recordPurchasesHistory) {
+          return res.status(404).json({ message: 'Record not found' });
+      }
+
+      // Update the paymentType
+      // if (paymentStatus) recordPurchases.paymentType = paymentType;
+      if (paymentType) recordPurchasesHistory.paymentType = paymentType;
+
+
+      // Save the updated vendor document
+      await inventory.save();
+
+      res.json(inventory);
+      console.log(inventory);
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+      console.log(error);
+  }
+});
+  
   
 
 

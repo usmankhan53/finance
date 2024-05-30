@@ -4,14 +4,17 @@ const { v4: uuidv4 } = require('uuid'); // Import UUID library
 
 const purchaseSchema = new Schema({
     _id: { type: String, default: uuidv4 }, // Unique ID for purchase
+    Category: {type: String, default: ''},
     quantity: { type: Number, default: 0 },
     costPerUnit: { type: Number, default: 0 },
     totalAmount: { type: Number, default: 0 },
+    paymentType: { type: String, default: '' },
     createdAt: { type: Date, default: Date.now }
 });
 
 const saleSchema = new Schema({
     _id: { type: String, default: uuidv4 }, // Unique ID for sale
+    Category: {type: String, default: ''},
     unitsSold: { type: Number, default: 0 },
     unitPrice: { type: Number, default: 0 },
     costPerUnit: { type: Number, default: 0 },
