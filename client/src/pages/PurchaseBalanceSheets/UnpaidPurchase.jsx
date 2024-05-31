@@ -48,7 +48,7 @@ const UnpaidPurchase = () => {
 
     const newStatus = updatedPurchases[recordId];
     try {
-      const response = await fetch(`http://localhost:8001/inventory/PaymentUpdate/${category}/${recordId}`, {
+      const response = await fetch(`https://financelocal.netlify.app/functions/app/inventory/PaymentUpdate/${category}/${recordId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
