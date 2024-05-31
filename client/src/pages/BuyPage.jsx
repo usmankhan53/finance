@@ -18,7 +18,7 @@ const BuyPage = () => {
 
   const fetchInventory = async () => {
     try {
-      const response = await fetch(`http://localhost:8001/inventory/${category}`);
+      const response = await fetch(`https://erpfinance.netlify.app/.netlify/functions/app/inventory/${category}`);
       if (!response.ok) throw new Error('Failed to fetch inventory');
       const data = await response.json();
       setInventory(data.purchases);
@@ -56,7 +56,7 @@ const BuyPage = () => {
       return;
     }
 
-    const apiEndpoint = `http://localhost:8001/purchase/${category}`;
+    const apiEndpoint = `https://erpfinance.netlify.app/.netlify/functions/app/purchase/${category}`;
     const method = 'PUT';
 
     try {
@@ -97,7 +97,7 @@ const BuyPage = () => {
     const userResponse = prompt("Are you sure you want to delete it?", "Yes");
     if (userResponse === "Yes") {
       try {
-        const response = await fetch(`http://localhost:8001/purchase/${category}/${purchaseId}`, {
+        const response = await fetch(`https://erpfinance.netlify.app/.netlify/functions/app/purchase/${category}/${purchaseId}`, {
           method: 'PUT',
         });
         if (!response.ok) throw new Error('Failed to delete purchase record');
