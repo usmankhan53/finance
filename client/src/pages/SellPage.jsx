@@ -26,7 +26,7 @@ const SellPage = () => {
     // Fetch sales data from the API
   const fetchSalesData = async () => {
     try {
-      const response = await fetch(`https://financelocal.netlify.app/functions/app/inventory/${category}`);
+      const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/inventory/${category}`);
       if (!response.ok) throw new Error('Failed to fetch sales data');
       const data = await response.json();
       console.log(data);
@@ -111,7 +111,7 @@ useEffect(()=>{
 
     if (userResponse === "Yes") {
         try {
-            const response = await fetch(`https://financelocal.netlify.app/functions/app/deletesale/${category}/${saleId}`, {
+            const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/deletesale/${category}/${saleId}`, {
                 method: 'PUT',
             });
 
@@ -163,7 +163,7 @@ const handleUnitsSoldChange = (e) => {
     }
     
     try {
-      const response = await fetch(`https://financelocal.netlify.app/functions/app/sales/${category}/${_id}`, {
+      const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/sales/${category}/${_id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
