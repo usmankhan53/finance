@@ -26,7 +26,7 @@ const SellPage = () => {
     // Fetch sales data from the API
   const fetchSalesData = async () => {
     try {
-      const response = await fetch(`https://erpfinance.netlify.app/.netlify/functions/app/inventory/${category}`);
+      const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/inventory/${category}`);
       if (!response.ok) throw new Error('Failed to fetch sales data');
       const data = await response.json();
       console.log(data);

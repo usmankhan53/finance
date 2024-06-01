@@ -16,7 +16,7 @@ function VendorsPage() {
 
   const fetchVendors = async () => {
     try {
-      const response = await fetch('https://erpfinance.netlify.app/.netlify/functions/app/vendor');
+      const response = await fetch('https://financelocal.netlify.app/.netlify/functions/app/vendor');
       if (response.ok) {
         const data = await response.json();
         setVendors(data);
@@ -49,7 +49,7 @@ function VendorsPage() {
       if (isEditing) {
         // Update vendor
         try {
-          const response = await fetch(`https://erpfinance.netlify.app/.netlify/functions/app/vendor/${currentVendorName}`, {
+          const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/vendor/${currentVendorName}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ function VendorsPage() {
       } else {
         // Add vendor
         try {
-          const response = await fetch('https://erpfinance.netlify.app/.netlify/functions/app/vendor', {
+          const response = await fetch('https://financelocal.netlify.app/.netlify/functions/app/vendor', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ function VendorsPage() {
   const deleteVendor = async (index) => {
     const vendorName = vendors[index].name;
     try {
-      const response = await fetch(`https://erpfinance.netlify.app/.netlify/functions/app/vendor/${vendorName}`, {
+      const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/vendor/${vendorName}`, {
         method: 'DELETE',
       });
       if (response.ok) {

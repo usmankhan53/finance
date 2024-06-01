@@ -23,7 +23,7 @@ const VendorAddSales = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('https://erpfinance.netlify.app/.netlify/functions/app/inventory');
+      const response = await fetch('https://financelocal.netlify.app/.netlify/functions/app/inventory');
       if (response.ok) {
         const data = await response.json();
         setCategories(data);
@@ -86,7 +86,7 @@ const VendorAddSales = () => {
     try {
       // Send form data to APIs
       await Promise.all([
-        fetch(`https://erpfinance.netlify.app/.netlify/functions/app/sales/${category}/${purchases[selectedRow]?._id}`, {
+        fetch(`https://financelocal.netlify.app/.netlify/functions/app/sales/${category}/${purchases[selectedRow]?._id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ const VendorAddSales = () => {
             paymentType: newRecord.paymentStatus,
           }),
         }),
-        fetch(`https://erpfinance.netlify.app/.netlify/functions/app/vendor/${vendorName}`, {
+        fetch(`https://financelocal.netlify.app/.netlify/functions/app/vendor/${vendorName}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

@@ -18,7 +18,7 @@ const BuyPage = () => {
 
   const fetchInventory = async () => {
     try {
-      const response = await fetch(`https://erpfinance.netlify.app/.netlify/functions/app/inventory/${category}`);
+      const response = await fetch(`https://financelocal.netlify.app/functions/app/inventory/${category}`);
       if (!response.ok) throw new Error('Failed to fetch inventory');
       const data = await response.json();
       setInventory(data.purchases);

@@ -24,7 +24,7 @@ function LoginForm({ onLogin }) {
     };
 
     try {
-      const response = await fetch('https://erpfinance.netlify.app/.netlify/functions/app/login', { // Adjust the URL as per your backend API
+      const response = await fetch('https://financelocal.netlify.app/.netlify/functions/app/login', { // Adjust the URL as per your backend API
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -37,6 +37,7 @@ function LoginForm({ onLogin }) {
       }
 
       const data = await response.json();
+
       
       // Handle login and save token
       onLogin(data.token);
