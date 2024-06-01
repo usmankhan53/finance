@@ -78,7 +78,7 @@ export default function Category() {
         return;
       }
   
-      const response = await fetch('https://financelocal.netlify.app/functions/app/inventory', {
+      const response = await fetch('https://financelocal.netlify.app/.netlify/functions/app/inventory', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -104,7 +104,7 @@ export default function Category() {
   
   const deleteCategory = async (category) => {
     try {
-      const response = await fetch(`https://financelocal.netlify.app/functions/app/inventory/${category}`, {
+      const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/inventory/${category}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -132,7 +132,7 @@ export default function Category() {
         alert("Please enter a valid name");
         throw new Error("Please enter a valid name");
       }
-      const response = await fetch(`https://financelocal.netlify.app/functions/app/inventory/${selectedCategory}`, {
+      const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/inventory/${selectedCategory}`, {
         method: 'PUT',  // Use PUT method here
         headers: {
           'Content-Type': 'application/json'
@@ -162,7 +162,7 @@ export default function Category() {
 
     const fetchInventoryCategories = async () => {
       try {
-        const response = await fetch('https://financelocal.netlify.app/functions/app/inventory');
+        const response = await fetch('https://financelocal.netlify.app/.netlify/functions/app/inventory');
         if (!response.ok) {
           throw new Error('Failed to fetch inventory items');
         }
