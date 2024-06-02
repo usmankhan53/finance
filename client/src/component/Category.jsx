@@ -22,6 +22,7 @@ export default function Category() {
   const [editCategoryName, setEditCategoryName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [allCategories, setAllCategories] = useState([]);
+  const [addButtonDisabled, setAddButtonDisabled] = useState(false); // New state for disabling the add button
   const navigate = useNavigate();
 
   const toggleOpen = (category) => {
@@ -77,7 +78,10 @@ export default function Category() {
         alert("This category already exists. Please enter a new category.");
         return;
       }
-  
+
+      // Disable the add button to prevent multiple clicks
+      setAddButtonDisabled(true);
+
       const response = await fetch('https://financelocal.netlify.app/.netlify/functions/app/inventory', {
         method: 'POST',
         headers: {
@@ -99,6 +103,9 @@ export default function Category() {
       setNewCategory(''); // Clear input field
     } catch (error) {
       console.error('Error adding new category:', error);
+    } finally {
+      // Enable the add button after the operation completes
+      setAddButtonDisabled(false);
     }
   };
   
@@ -122,6 +129,7 @@ export default function Category() {
       setAllCategories((prevCategories) => prevCategories.filter((item) => item.category !== category));
     } catch (error) {
       console.error('Error deleting category:', error);
+      console.log(error);
     }
   };
 
@@ -180,22 +188,19 @@ export default function Category() {
 
   return (
     <div className='category-container-full'>
-      <button className='purchase-statments-btn'  onClick={() => handleSalesStatemnts('/PurchaseStatements')}>Purchase Statments <MDBIcon fas icon="money-check-alt" /></button>
-      <button className='statments-btn'  onClick={() => handleStatemnts('/statments')}>Sales Statments <MDBIcon fas icon="money-check-alt" /></button>
-      <div className="business-container">
-        <h1 className="business-name">Dr.Faheem Inventory System</h1>
-      </div>
-     
-      <div className="vendor-container">
-       <button className="add-vendor-btn"  onClick={() => handleVendors('/vendors')}>Vendors <MDBIcon fas icon="users" /></button>
+      <h1 className="business-name">Dr.Faheem Inventory System</h1>
 
-
+      <div className="header-btns-container">
+      <button className='purchase-statments-btn'  onClick={() => handleSalesStatemnts('/PurchaseStatements')}>Purchase Statements <MDBIcon fas icon="money-check-alt" /></button>
+      <button className='sales-statments-btn'  onClick={() => handleStatemnts('/statments')}>Sales Statements <MDBIcon fas icon="money-check-alt" /></button>
+      <button className="add-vendor-btn"  onClick={() => handleVendors('/vendors')}>Vendors <MDBIcon fas icon="users" /></button>
       </div>
+      
 
       <div className="container-center">
         <div className="container-input-category">
           <form onSubmit={addCategory}>
-            <MDBBtn type='submit' className='add-category-btn' color='success'><MDBIcon fas icon="plus" /></MDBBtn>
+            <MDBBtn type='submit' className='add-category-btn' color='success' disabled={addButtonDisabled}><MDBIcon fas icon="plus" /></MDBBtn>
             <MDBInput
               className='input-category'
               label="NEW CATEGORY"
@@ -238,7 +243,6 @@ export default function Category() {
             </MDBModalBody>
             <MDBModalFooter>
               <MDBBtn className='buy-btn' onClick={() => handleNavigation(`/categories/${selectedCategory}`)}>Go to inventory</MDBBtn>
-              {/* <MDBBtn className='sale-btn' onClick={() => handleNavigation('/sell')}>Sell Inventory</MDBBtn> */}
             </MDBModalFooter>
           </MDBModalContent>
         </MDBModalDialog>
@@ -269,13 +273,13 @@ export default function Category() {
 
       <MDBFooter bgColor='light' className='footer-category'>
         <div className='text-center new-text-style p-3' style={{ backgroundColor: '#139c49' }}>
-        &copy; {new Date().getFullYear()} Copyright:{' '}
+          &copy; {new Date().getFullYear()} Developed and Managed By{' '}
           <a className='text-white' href='https://techxudo.com/'>
-            Developed and Managed By techxudo.com
+            techxudo.com
           </a>
         </div>
-        </MDBFooter>
-      </div>
-
+      </MDBFooter>
+    </div>
   );
 }
+
