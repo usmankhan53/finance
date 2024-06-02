@@ -30,29 +30,54 @@
   border: none;
   padding: 10px 20px;
   margin-left: 50%;
-  border-radius: 5px;
   height: 50px;
   width: 300px;
   cursor: pointer;
   border-radius: 30px;
   transition: background-color 0.3s;
 }
-
-.sales-statments-btn{
-  background-color: #548750;
-  color: white;
-  border: none;
+.sales-statments-btn, .purchase-statments-btn {
+  display: inline-block;
   padding: 10px 20px;
   border-radius: 30px;
   height: 50px;
   cursor: pointer;
+  text-align: center;
+  font-size: 16px; /* Ensure the font size is responsive */
   transition: background-color 0.3s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.purchase-statments-btn{
+.sales-statments-btn {
+  background-color: #548750;
+  color: white;
+  border: none;
+}
+
+.purchase-statments-btn {
   background-color: #ff4c29;
-  height: 50px;
-  border-radius: 30px;
+  color: white;
+  border: none;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .sales-statments-btn, .purchase-statments-btn {
+    padding: 8px 16px; /* Adjust padding for smaller screens */
+    height: auto; /* Allow height to adjust */
+    font-size: 14px; /* Adjust font size for smaller screens */
+    border-radius: 25px; /* Slightly smaller border radius */
+  }
+}
+
+@media (max-width: 480px) {
+  .sales-statments-btn, .purchase-statments-btn {
+    padding: 6px 12px; /* Further adjust padding for very small screens */
+    font-size: 12px; /* Smaller font size for very small screens */
+    border-radius: 20px; /* Smaller border radius for very small screens */
+  }
 }
 
 

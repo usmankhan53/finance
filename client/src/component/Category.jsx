@@ -191,8 +191,8 @@ export default function Category() {
       <h1 className="business-name">Dr.Faheem Inventory System</h1>
 
       <div className="header-btns-container">
-      <button className='purchase-statments-btn'  onClick={() => handleSalesStatemnts('/PurchaseStatements')}>Purchase Statements <MDBIcon fas icon="money-check-alt" /></button>
-      <button className='sales-statments-btn'  onClick={() => handleStatemnts('/statments')}>Sales Statements <MDBIcon fas icon="money-check-alt" /></button>
+      <button className='purchase-statments-btn'  onClick={() => handleSalesStatemnts('/PurchaseStatements')}>Purchase Statements</button>
+      <button className='sales-statments-btn'  onClick={() => handleStatemnts('/statments')}>Sales Statements </button>
       <button className="add-vendor-btn"  onClick={() => handleVendors('/vendors')}>Vendors <MDBIcon fas icon="users" /></button>
       </div>
       
