@@ -78,6 +78,7 @@ const UnpaidPurchase = () => {
           <tr>
             <th>ID</th>
             <th>Category</th>
+            <th>Product Name</th>
             <th>Number of Units</th>
             <th>Cost Per Unit</th>
             <th>Amount</th>
@@ -93,6 +94,7 @@ const UnpaidPurchase = () => {
             <tr key={index}>
               <td>{index + 1}</td>
               <td>{purchase.Category}</td>
+              <td>{purchase.Product}</td>
               <td>{purchase.quantity}</td>
               <td>{purchase.costPerUnit}</td>
               <td>{purchase.totalAmount}</td>
@@ -105,7 +107,8 @@ const UnpaidPurchase = () => {
                 >
                   <option value="unpaid">Unpaid</option>
                   <option value="cash">Cash</option>
-                  <option value="bank">Bank</option>
+                  <option value="HBL Bank">HBL Bank</option>
+                  <option value="Meezan Bank">Meezan Bank</option>
                 </select>
               </td>
               <td><button onClick={() => saveUpdatedPayments(purchase._id, purchase.Category)}>Save</button></td>
@@ -116,7 +119,7 @@ const UnpaidPurchase = () => {
         <tfoot>
           <tr>
             <td className={styles['footer-cell']}>Total Records: {filteredPurchasesData.length}</td>
-            <td colSpan="2" className={styles['footer-cell']}>Total Units {calculateTotalUnitsSold(filteredPurchasesData)}</td>
+            <td colSpan="3" className={styles['footer-cell']}>Total Units {calculateTotalUnitsSold(filteredPurchasesData)}</td>
             <td colSpan="2" className={styles['footer-cell']}>Total Amount: {calculateTotalAmount(filteredPurchasesData)}</td>
           </tr>
         </tfoot>

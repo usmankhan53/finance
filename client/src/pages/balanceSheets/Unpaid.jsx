@@ -94,6 +94,7 @@ function Unpaid() {
             <th>ID</th>
             <th>Vendor Name</th>
             <th>Category</th>
+            <th>Product Name</th>
             <th>Units Sold</th>
             <th>Unit Price</th>
             <th>Cost Per Unit</th>
@@ -110,6 +111,7 @@ function Unpaid() {
               <td>{index + 1}</td>
               <td>{record.vendorName}</td>
               <td>{record.category}</td>
+              <td>{record.Product}</td>
               <td>{record.unitsSold}</td>
               <td>{record.unitPrice}</td>
               <td>{record.costPerUnit}</td>
@@ -122,7 +124,8 @@ function Unpaid() {
                 >
                   <option value="Unpaid">Unpaid</option>
                   <option value="Cash">Cash</option>
-                  <option value="Bank">Bank</option>
+                  <option value="HBL Bank">HBL Bank</option>
+                  <option value="Meezan Bank">Meezan Bank</option>
                 </select>
               </td>
               <td>{new Date(record.soldAt).toLocaleDateString()}</td>
@@ -135,8 +138,8 @@ function Unpaid() {
         <tfoot>
           <tr>
             <td colSpan="3" className="footer-cell">Total Records: {unpaidRecords.length}</td>
-            <td className="footer-cell">Total Units Sold: {calculateTotalUnitsSold(unpaidRecords)}</td>
-            <td colSpan="3" className="footer-cell">Total Amount: {calculateTotalAmount(unpaidRecords)}</td>
+            <td className="footer-cell" colSpan="3">Total Units Sold: {calculateTotalUnitsSold(unpaidRecords)}</td>
+            <td colSpan="2" className="footer-cell">Total Amount: {calculateTotalAmount(unpaidRecords)}</td>
             <td className="footer-cell">Total Profit/Loss: {calculateTotalProfit(unpaidRecords)}</td>
            
           </tr>

@@ -76,6 +76,7 @@ const VendorAddSales = () => {
     const newRecord = {
       
       category,
+      Product: purchases[selectedRow].Product,
       unitsSold: unitsSold ? parseInt(unitsSold) : undefined,
       unitPrice: unitPrice ? parseFloat(unitPrice) : undefined,
       costPerUnit: purchases[selectedRow].costPerUnit,
@@ -86,12 +87,13 @@ const VendorAddSales = () => {
     try {
       // Send form data to APIs
       await Promise.all([
-        fetch(`https://financelocal.netlify.app/.netlify/functions/app/sales/${category}/${purchases[selectedRow]?._id}`, {
+        fetch(`http://localhost:8001/sales/${category}/${purchases[selectedRow]?._id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            Product: newRecord.Product,
             unitsSold: newRecord.unitsSold,
             unitPrice: newRecord.unitPrice,
             costPerUnit: newRecord.costPerUnit,
@@ -102,7 +104,7 @@ const VendorAddSales = () => {
             paymentType: newRecord.paymentStatus,
           }),
         }),
-        fetch(`https://financelocal.netlify.app/.netlify/functions/app/vendor/${vendorName}`, {
+        fetch(`http://localhost:8001/vendor/${vendorName}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -110,6 +112,7 @@ const VendorAddSales = () => {
           body: JSON.stringify({
             vendorRecord: {
               category: newRecord.category,
+              Product: newRecord.Product,
               unitsSold: newRecord.unitsSold,
               unitPrice: newRecord.unitPrice,
               costPerUnit: newRecord.costPerUnit,
@@ -217,7 +220,8 @@ const VendorAddSales = () => {
         />
         <select name="paymentStatus" value={paymentStatus} onChange={handleInputChange} disabled={selectedRow === null}>
           <option value="Cash">Cash</option>
-          <option value="Bank">Bank</option>
+          <option value="Meezan Bank">Meezan Bank</option>
+          <option value="HBL Bank">HBL Bank</option>
           <option value="Unpaid">Unpaid</option>
         </select>
         <button className={styles.addSalebtn} disabled={selectedRow === null} onClick={handleAdd}>Add</button>
@@ -228,6 +232,7 @@ const VendorAddSales = () => {
           <tr>
             <th>ID</th>
             <th>Category</th>
+            <th>Product Name</th>
             <th>Quantity</th>
             <th>Cost Per Unit</th>
             <th>Total Amount</th>
@@ -240,6 +245,7 @@ const VendorAddSales = () => {
             <tr key={index + 1}>
               <td>{index + 1}</td>
               <td>{category}</td>
+              <td>{purchase.Product}</td>
               <td>{purchase.quantity}</td>
               <td>{purchase.costPerUnit}</td>
               <td>{purchase.totalAmount}</td>

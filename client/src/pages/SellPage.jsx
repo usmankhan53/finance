@@ -5,7 +5,7 @@ import dayjs from 'dayjs'; // Import dayjs for date manipulation
 
 const SellPage = () => {
   const location = useLocation();
-  const { category,costPerUnit, _id } = location.state || {};
+  const { category,Product,costPerUnit, _id } = location.state || {};
 
   const [unitsSold, setUnitsSold] = useState('');
   const [unitPrice, setUnitPrice] = useState('');
@@ -163,11 +163,12 @@ const handleUnitsSoldChange = (e) => {
     }
     
     try {
-      const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/sales/${category}/${_id}`, {
+      const response = await fetch(`http://localhost:8001/sales/${category}/${_id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
          Category: category,
+          Product,
           unitsSold,
           unitPrice,
           clientName,
@@ -213,6 +214,7 @@ const handleUnitsSoldChange = (e) => {
     <div className="sell-container">
       
     <h3>Category: {category.toUpperCase()} </h3> 
+    <h4>Product Name: {Product.toUpperCase()} </h4> 
     <p>Units Left: {unitsLeft}</p>
     <p>Sub Unit Cost: {costPerUnit}</p>
   
@@ -283,8 +285,9 @@ const handleUnitsSoldChange = (e) => {
         />
         <select className='input-field' value={paymentType} onChange={(e) => setPaymentType(e.target.value)}>
           <option value="Cash">Cash</option>
-          <option value="Bank">Bank</option>
           <option value="Unpaid">Unpaid</option>
+          <option value="Meezan Bank">Meezan Bank</option>
+          <option value="HBL Bank">HBL Bank</option>
         </select>
         <button type="submit" className="submit-btn">Add Sale</button>
       </form>
@@ -293,6 +296,7 @@ const handleUnitsSoldChange = (e) => {
         <thead>
           <tr>
             <th>ID</th>
+            <th>Product Name</th>
             <th>Buying Price</th>
             <th>Selling Price</th>
             <th>Units Sold</th>
@@ -308,6 +312,7 @@ const handleUnitsSoldChange = (e) => {
           {filteredSalesData.map((sale,key) => (
             <tr key={sale.id}>
               <td>{key + 1}</td>
+              <td>{sale.Product}</td>
               <td>{sale.costPerUnit}</td>
               <td>{sale.unitPrice}</td>
               <td>{sale.unitsSold}</td>

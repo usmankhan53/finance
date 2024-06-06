@@ -84,7 +84,7 @@ router.delete('/inventory/:category', async (req, res) => {
 router.put('/purchase/:category', async (req, res) => {
     try {
       const { category } = req.params;
-      const { Category, quantity, costPerUnit , paymentType } = req.body;
+      const { Category,Product, quantity, costPerUnit , paymentType } = req.body;
   
       // Find the inventory item by category
       let inventoryItem = await Inventory.findOne({ category });
@@ -99,6 +99,7 @@ router.put('/purchase/:category', async (req, res) => {
       // Create new purchase record
       const purchaseRecord = {
         Category,
+        Product,
         quantity,
         costPerUnit,
         totalAmount,
@@ -169,7 +170,7 @@ router.put('/purchase/:category/:purchaseId', async (req, res) => {
 router.put('/sales/:category/:purchaseId', async (req, res) => {
     try {
       const { category, purchaseId } = req.params;
-      const { Category, unitsSold, unitPrice, clientName, clientContact, paymentType } = req.body;
+      const { Category,Product,unitsSold, unitPrice, clientName, clientContact, paymentType } = req.body;
   
       // Find the inventory item by category
       let inventoryItem = await Inventory.findOne({ category });
@@ -201,6 +202,7 @@ router.put('/sales/:category/:purchaseId', async (req, res) => {
       // Add the sales record to the sales array
       const saleRecord = {
         Category,
+        Product,
         unitsSold,
         unitPrice,
         costPerUnit: purchaseRecord.costPerUnit,

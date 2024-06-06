@@ -50,6 +50,7 @@ const SalesTable = () => {
         <thead>
           <tr>
             <th>ID</th>
+            <th>Product Name</th>
             <th>Buying Price</th>
             <th>Selling Price</th>
             <th>Units Sold</th>
@@ -65,6 +66,7 @@ const SalesTable = () => {
           {salesData.map((sale, key) => (
             <tr key={sale.id}>
               <td>{key + 1}</td>
+              <td>{sale.Product}</td>
               <td>{sale.costPerUnit}</td>
               <td>{sale.unitPrice}</td>
               <td>{sale.unitsSold}</td>

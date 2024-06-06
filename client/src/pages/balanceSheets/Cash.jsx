@@ -50,6 +50,7 @@ function Cash() {
             <th>ID</th>
             <th>Vendor Name</th>
             <th>Category</th>
+            <th>Product Name</th>
             <th>Units Sold</th>
             <th>Unit Price</th>
             <th>Cost Per Unit</th>
@@ -64,6 +65,7 @@ function Cash() {
               <td>{index + 1}</td>
               <td>{record.vendorName}</td>
               <td>{record.category}</td>
+              <td>{record.Product}</td>
               <td>{record.unitsSold}</td>
               <td>{record.unitPrice}</td>
               <td>{record.costPerUnit}</td>
@@ -76,8 +78,8 @@ function Cash() {
         <tfoot>
           <tr>
             <td colSpan="3" className="footer-cell">Total Records: {CashRecords.length}</td>
-            <td className="footer-cell">Total Units Sold: {calculateTotalUnitsSold(CashRecords)}</td>
-            <td colSpan="3" className="footer-cell">Total Amount: {calculateTotalAmount(CashRecords)}</td>
+            <td className="footer-cell" colSpan="3">Total Units Sold: {calculateTotalUnitsSold(CashRecords)}</td>
+            <td colSpan="2" className="footer-cell">Total Amount: {calculateTotalAmount(CashRecords)}</td>
             <td colSpan="1" className="footer-cell">Total Profit/Loss: {calculateTotalProfit(CashRecords)}</td>
            
           </tr>

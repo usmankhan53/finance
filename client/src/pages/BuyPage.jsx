@@ -9,6 +9,7 @@ const BuyPage = () => {
 
   const [inventory, setInventory] = useState([]);
   const [units, setUnits] = useState('');
+  const [ProductName, setProductName] = useState('');
   const [costPerUnit, setCostPerUnit] = useState('');
   const [totalAmount, setTotalAmount] = useState('');
   const [paymentType, setPaymentType] = useState('Cash');
@@ -56,12 +57,13 @@ const BuyPage = () => {
       return;
     }
 
-    const apiEndpoint = `https://financelocal.netlify.app/.netlify/functions/app/purchase/${category}`;
+    const apiEndpoint = `http://localhost:8001/purchase/${category}`;
     const method = 'PUT';
 
     try {
       const purchaseData = {
         Category: category,
+        Product: ProductName,
         quantity: units,
         costPerUnit: costPerUnit,
         paymentType: paymentType
@@ -81,6 +83,7 @@ const BuyPage = () => {
       setUnits('');
       setCostPerUnit('');
       setTotalAmount('');
+      setProductName('');
       alert("New inventory added successfully!");
       fetchInventory();
     } catch (error) {
@@ -115,7 +118,7 @@ const BuyPage = () => {
   };
 
   const handleAddSale = (item) => {
-    navigate('addSales', { state: { category, quantity: item.quantity, costPerUnit: item.costPerUnit, _id: item._id } });
+    navigate('addSales', { state: { category, Product: item.Product, quantity: item.quantity, costPerUnit: item.costPerUnit, _id: item._id } });
   };
 
   const handlePurchasesTableNavigation = () => {
@@ -148,6 +151,15 @@ const BuyPage = () => {
       <button onClick={handleSalesTableNavigation} className="sales-table-btn">View All Sales</button>
       <button onClick={handlePurchasesTableNavigation} className="purchases-table-btn">View All Purchases</button>
       <form onSubmit={handleSubmit} className="form-inline">
+
+      <input
+          type="text"
+          placeholder="Product Name"
+          name="ProductName"
+          value={ProductName}
+          onChange={(e)=> setProductName(e.target.value)}
+          className="input-field"
+      />
         <input
           type="number"
           placeholder="Units"
@@ -175,7 +187,8 @@ const BuyPage = () => {
         <select className='input-field' value={paymentType} onChange={(e) => setPaymentType(e.target.value)}>
           <option value="Unpaid">Unpaid</option>
           <option value="Cash">Cash</option>
-          <option value="Bank">Bank</option>
+          <option value="Meezan Bank">Meezan Bank</option>
+          <option value="HBL Bank">HBL Bank</option>
         </select>
         <button type="submit" className="submit-btn" disabled={isSubmitting}>
           {isSubmitting ? 'Adding...' : 'Add'}
@@ -186,6 +199,7 @@ const BuyPage = () => {
         <thead>
           <tr>
             <th>ID</th>
+            <th>Product Name</th>
             <th>Units</th>
             <th>Cost per Unit</th>
             <th>Total Amount</th>
@@ -197,6 +211,7 @@ const BuyPage = () => {
           {inventory.map((item, key) => (
             <tr key={item._id}>
               <td>{key + 1}</td>
+              <td>{item.Product}</td>
               <td>{item.quantity}</td>
               <td>{item.costPerUnit}</td>
               <td>{item.totalAmount}</td>
@@ -221,7 +236,7 @@ const BuyPage = () => {
         <tfoot>
           <tr>
             <td className='footer-cell'>Total Records: {inventory.length}</td>
-            <td className='footer-cell'>Net Quantity: {calculateNetQuantity(inventory)}</td>
+            <td className='footer-cell' colSpan="2">Net Quantity: {calculateNetQuantity(inventory)}</td>
             <td className='footer-cell-net-total' colSpan="2">Net Amount: {calculateNetTotalAmount(inventory)}</td>
           </tr>
         </tfoot>

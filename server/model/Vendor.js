@@ -7,6 +7,7 @@ const vendorRecordSchema = new Schema({
 
     _id: { type: String, default: uuidv4 },
     category: { type: String,  default: ''},
+    Product: {type: String, default: ''},
     unitsSold: { type: Number,  default:0 },
     unitPrice: { type: Number, default: 0},
     costPerUnit: { type: Number,  default: 0 },
