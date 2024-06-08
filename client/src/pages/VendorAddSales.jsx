@@ -76,6 +76,7 @@ const VendorAddSales = () => {
     const newRecord = {
       
       category,
+      SubCategory: purchases[selectedRow].SubCategory,
       Product: purchases[selectedRow].Product,
       unitsSold: unitsSold ? parseInt(unitsSold) : undefined,
       unitPrice: unitPrice ? parseFloat(unitPrice) : undefined,
@@ -93,6 +94,7 @@ const VendorAddSales = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            SubCategory: newRecord.SubCategory,
             Product: newRecord.Product,
             unitsSold: newRecord.unitsSold,
             unitPrice: newRecord.unitPrice,
@@ -112,6 +114,7 @@ const VendorAddSales = () => {
           body: JSON.stringify({
             vendorRecord: {
               category: newRecord.category,
+              SubCategory: newRecord.SubCategory,
               Product: newRecord.Product,
               unitsSold: newRecord.unitsSold,
               unitPrice: newRecord.unitPrice,
@@ -232,6 +235,7 @@ const VendorAddSales = () => {
           <tr>
             <th>ID</th>
             <th>Category</th>
+            <th>Sub Category</th>
             <th>Product Name</th>
             <th>Quantity</th>
             <th>Cost Per Unit</th>
@@ -245,6 +249,7 @@ const VendorAddSales = () => {
             <tr key={index + 1}>
               <td>{index + 1}</td>
               <td>{category}</td>
+              <td>{purchase.SubCategory}</td>
               <td>{purchase.Product}</td>
               <td>{purchase.quantity}</td>
               <td>{purchase.costPerUnit}</td>

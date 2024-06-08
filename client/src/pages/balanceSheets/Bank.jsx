@@ -4,6 +4,8 @@ import styles from './Bank.module.css';
 function Bank() {
   const [bankRecords, setBankRecords] = useState([]);
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState('Bank');
+  const [selectedVendor, setSelectedVendor] = useState('');
+  const [vendors, setVendors] = useState([]);
 
   useEffect(() => {
     fetchVendors();
@@ -20,6 +22,7 @@ function Bank() {
             .map(record => ({ ...record, vendorName: vendor.name }))
         );
         setBankRecords(records);
+        setVendors(data.map(vendor => vendor.name)); // Populate vendor names
       } else {
         console.error('Failed to fetch vendors');
       }
@@ -41,6 +44,10 @@ function Bank() {
     return salesData.reduce((total, sale) => total + sale.profit, 0);
   };
 
+  const filteredRecords = selectedVendor
+    ? bankRecords.filter(record => record.vendorName === selectedVendor)
+    : bankRecords;
+
   return (
     <div className={styles.container}>
       <h1>Bank Payment Records</h1>
@@ -55,6 +62,18 @@ function Bank() {
           <option value="HBL Bank">HBL Bank</option>
           <option value="Meezan Bank">Meezan Bank</option>
         </select>
+
+        <label htmlFor="vendorName">Select Vendor:</label>
+        <select
+          id="vendorName"
+          value={selectedVendor}
+          onChange={(e) => setSelectedVendor(e.target.value)}
+        >
+          <option value="">All Vendors</option>
+          {vendors.map((vendor, index) => (
+            <option key={index} value={vendor}>{vendor}</option>
+          ))}
+        </select>
       </div>
       <table className={styles.table}>
         <thead>
@@ -62,6 +81,7 @@ function Bank() {
             <th>ID</th>
             <th>Vendor Name</th>
             <th>Category</th>
+            <th>Sub Category</th>
             <th>Product Name</th>
             <th>Units Sold</th>
             <th>Unit Price</th>
@@ -73,11 +93,12 @@ function Bank() {
           </tr>
         </thead>
         <tbody>
-          {bankRecords.map((record, index) => (
+          {filteredRecords.map((record, index) => (
             <tr key={record._id}>
               <td>{index + 1}</td>
               <td>{record.vendorName}</td>
               <td>{record.category}</td>
+              <td>{record.SubCategory}</td>
               <td>{record.Product}</td>
               <td>{record.unitsSold}</td>
               <td>{record.unitPrice}</td>
@@ -91,10 +112,10 @@ function Bank() {
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan="1" className="footer-cell">Total Records: {bankRecords.length}</td>
-            <td className="footer-cell" colSpan="5">Total Units Sold: {calculateTotalUnitsSold(bankRecords)}</td>
-            <td colSpan="2" className="footer-cell">Total Amount: {calculateTotalAmount(bankRecords)}</td>
-            <td colSpan="2" className="footer-cell">Total Profit/Loss: {calculateTotalProfit(bankRecords)}</td>
+            <td colSpan="1" className="footer-cell">Total Records: {filteredRecords.length}</td>
+            <td className="footer-cell" colSpan="5">Total Units Sold: {calculateTotalUnitsSold(filteredRecords)}</td>
+            <td colSpan="3" className="footer-cell">Total Amount: {calculateTotalAmount(filteredRecords)}</td>
+            <td colSpan="2" className="footer-cell">Total Profit/Loss: {calculateTotalProfit(filteredRecords)}</td>
           </tr>
         </tfoot>
       </table>

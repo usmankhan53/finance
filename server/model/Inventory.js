@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require('uuid'); // Import UUID library
 const purchaseSchema = new Schema({
     _id: { type: String, default: uuidv4 }, // Unique ID for purchase
     Category: {type: String, default: ''},
+    SubCategory : {type: String, default: ''},
     Product: {type: String, default: ''},
     quantity: { type: Number, default: 0 },
     costPerUnit: { type: Number, default: 0 },
@@ -16,6 +17,7 @@ const purchaseSchema = new Schema({
 const saleSchema = new Schema({
     _id: { type: String, default: uuidv4 }, // Unique ID for sale
     Category: {type: String, default: ''},
+    SubCategory : {type: String, default: ''},
     Product: {type: String, default: ''},
     unitsSold: { type: Number, default: 0 },
     unitPrice: { type: Number, default: 0 },
@@ -30,6 +32,7 @@ const saleSchema = new Schema({
 
 const inventorySchema = new Schema({
     category: { type: String, required: true },
+    SubCategories : [String],
     availableStocks: { type: Number, default: 0 },
     purchases: [purchaseSchema],
     purchasesHistory: [purchaseSchema],

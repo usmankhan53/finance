@@ -3,6 +3,8 @@ import styles from './Cash.module.css';
 
 function Cash() {
   const [CashRecords, setCashRecords] = useState([]);
+  const [selectedVendor, setSelectedVendor] = useState('');
+  const [vendors, setVendors] = useState([]);
 
   useEffect(() => {
     fetchVendors();
@@ -19,6 +21,7 @@ function Cash() {
             .map(record => ({ ...record, vendorName: vendor.name }))
         );
         setCashRecords(records);
+        setVendors(data.map(vendor => vendor.name)); // Populate vendor names
       } else {
         console.error('Failed to fetch vendors');
       }
@@ -27,29 +30,46 @@ function Cash() {
     }
   };
 
-    // Functions to calculate totals
-    const calculateTotalUnitsSold = (salesData) => {
-      return salesData.reduce((total, sale) => total + sale.unitsSold, 0);
-    };
-  
-    const calculateTotalAmount = (salesData) => {
-      return salesData.reduce((total, sale) => total + sale.amount, 0);
-    };
-  
-    const calculateTotalProfit = (salesData) => {
-      return salesData.reduce((total, sale) => total + sale.profit, 0);
-    };
+  // Functions to calculate totals
+  const calculateTotalUnitsSold = (salesData) => {
+    return salesData.reduce((total, sale) => total + sale.unitsSold, 0);
+  };
 
+  const calculateTotalAmount = (salesData) => {
+    return salesData.reduce((total, sale) => total + sale.amount, 0);
+  };
+
+  const calculateTotalProfit = (salesData) => {
+    return salesData.reduce((total, sale) => total + sale.profit, 0);
+  };
+
+  const filteredRecords = selectedVendor
+    ? CashRecords.filter(record => record.vendorName === selectedVendor)
+    : CashRecords;
 
   return (
     <div className={styles.container}>
       <h1>Cash Payment Records</h1>
+      <div className={styles.filter}>
+        <label htmlFor="vendorName">Select Vendor:</label>
+        <select
+          id="vendorName"
+          value={selectedVendor}
+          onChange={(e) => setSelectedVendor(e.target.value)}
+        >
+          <option value="">All Vendors</option>
+          {vendors.map((vendor, index) => (
+            <option key={index} value={vendor}>{vendor}</option>
+          ))}
+        </select>
+      </div>
       <table className={styles.table}>
         <thead>
           <tr>
             <th>ID</th>
             <th>Vendor Name</th>
             <th>Category</th>
+            <th>Sub Category</th>
             <th>Product Name</th>
             <th>Units Sold</th>
             <th>Unit Price</th>
@@ -60,11 +80,12 @@ function Cash() {
           </tr>
         </thead>
         <tbody>
-          {CashRecords.map((record, index) => (
+          {filteredRecords.map((record, index) => (
             <tr key={record._id}>
               <td>{index + 1}</td>
               <td>{record.vendorName}</td>
               <td>{record.category}</td>
+              <td>{record.SubCategory}</td>
               <td>{record.Product}</td>
               <td>{record.unitsSold}</td>
               <td>{record.unitPrice}</td>
@@ -77,11 +98,10 @@ function Cash() {
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan="3" className="footer-cell">Total Records: {CashRecords.length}</td>
-            <td className="footer-cell" colSpan="3">Total Units Sold: {calculateTotalUnitsSold(CashRecords)}</td>
-            <td colSpan="2" className="footer-cell">Total Amount: {calculateTotalAmount(CashRecords)}</td>
-            <td colSpan="1" className="footer-cell">Total Profit/Loss: {calculateTotalProfit(CashRecords)}</td>
-           
+            <td colSpan="1" className="footer-cell">Total Records: {filteredRecords.length}</td>
+            <td className="footer-cell" colSpan="5">Total Units Sold: {calculateTotalUnitsSold(filteredRecords)}</td>
+            <td colSpan="2" className="footer-cell">Total Amount: {calculateTotalAmount(filteredRecords)}</td>
+            <td colSpan="1" className="footer-cell">Total Profit/Loss: {calculateTotalProfit(filteredRecords)}</td>
           </tr>
         </tfoot>
       </table>

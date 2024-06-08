@@ -14,8 +14,12 @@ const BuyPage = () => {
   const [totalAmount, setTotalAmount] = useState('');
   const [paymentType, setPaymentType] = useState('Cash');
   const [availableStocks, setAvailableStocks] = useState('');
+  const [totalSubcategoryQuantity, setTotalSubcategoryQuantity] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+
+  const [subCategories, setSubCategories] = useState([]);
+  const [newSubCategory, setNewSubCategory] = useState('');
 
   const fetchInventory = async () => {
     try {
@@ -24,14 +28,39 @@ const BuyPage = () => {
       const data = await response.json();
       setInventory(data.purchases);
       setAvailableStocks(data.availableStocks);
+
+      // Check if a subcategory is selected
+    if (newSubCategory) {
+      // Calculate total quantity for the selected subcategory
+      const subcategoryPurchases = data.purchases.filter(purchase => purchase.SubCategory === newSubCategory);
+      const totalQuantity = subcategoryPurchases.reduce((total, purchase) => total + purchase.quantity, 0);
+      setTotalSubcategoryQuantity(totalQuantity);
+    } else {
+      // If no subcategory is selected, reset the total quantity
+      setTotalSubcategoryQuantity(0);
+    }
     } catch (error) {
       console.error('Error fetching inventory:', error);
     }
   };
 
+  const fetchSubCategories = async () => {
+    try {
+      const response = await fetch(`http://localhost:8001/inventory/${category}/subcategories`);
+      if (!response.ok) throw new Error('Failed to fetch subcategories');
+      const data = await response.json();
+      console.log(data); // Log the response data to check its structure
+      setSubCategories(data);
+    } catch (error) {
+      console.error('Error fetching subcategories:', error);
+    }
+  };
+  
+
   useEffect(() => {
     fetchInventory();
-  }, [category]);
+    fetchSubCategories();
+  }, [category, newSubCategory]);
 
   const handleUnitsChange = (e) => {
     const value = e.target.value;
@@ -63,6 +92,7 @@ const BuyPage = () => {
     try {
       const purchaseData = {
         Category: category,
+        SubCategory: newSubCategory,
         Product: ProductName,
         quantity: units,
         costPerUnit: costPerUnit,
@@ -118,7 +148,7 @@ const BuyPage = () => {
   };
 
   const handleAddSale = (item) => {
-    navigate('addSales', { state: { category, Product: item.Product, quantity: item.quantity, costPerUnit: item.costPerUnit, _id: item._id } });
+    navigate('addSales', { state: { category, Product: item.Product, quantity: item.quantity, costPerUnit: item.costPerUnit, _id: item._id , newSubCategory: item.SubCategory } });
   };
 
   const handlePurchasesTableNavigation = () => {
@@ -128,6 +158,40 @@ const BuyPage = () => {
   const handleSalesTableNavigation = () => {
     navigate(`sales`, { state: { category } });
   };
+
+  const handleAddSubCategory = async () => {
+    if (!newSubCategory.trim()) {
+      alert('SubCategory name is required');
+      return;
+    }
+  
+    // Check if the new subcategory already exists in the current list
+    if (subCategories.includes(newSubCategory)) {
+      alert('SubCategory already exists');
+      return;
+    }
+  
+    try {
+      const response = await fetch(`http://localhost:8001/inventory/${category}/subcategories`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newSubCategory }),
+      });
+  
+      if (!response.ok) throw new Error('Failed to add subcategory');
+  
+      // Fetch the updated list of subcategories for the current category
+      const updatedSubCategoriesResponse = await fetch(`http://localhost:8001/inventory/${category}/subcategories`);
+      if (!updatedSubCategoriesResponse.ok) throw new Error('Failed to fetch updated subcategories');
+      const updatedSubCategoriesData = await updatedSubCategoriesResponse.json();
+  
+      setSubCategories(updatedSubCategoriesData);
+      setNewSubCategory('');
+    } catch (error) {
+      console.error('Error adding subcategory:', error);
+    }
+  };
+  
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -147,58 +211,88 @@ const BuyPage = () => {
       <div className="stock-info">
         <h3>Stock Information for {category.toUpperCase()}</h3>
         <p><strong>Available Stocks:</strong> {availableStocks}</p>
+        <p><strong>Total Quantity for {newSubCategory}:</strong> {totalSubcategoryQuantity}</p>
       </div>
       <button onClick={handleSalesTableNavigation} className="sales-table-btn">View All Sales</button>
       <button onClick={handlePurchasesTableNavigation} className="purchases-table-btn">View All Purchases</button>
       <form onSubmit={handleSubmit} className="form-inline">
+  <input
+    type="text"
+    placeholder="Product Name"
+    name="ProductName"
+    value={ProductName}
+    onChange={(e) => setProductName(e.target.value)}
+    className="input-field"
+    disabled={!newSubCategory} // Disable if no subcategory is selected
+  />
+  <input
+    type="number"
+    placeholder="Units"
+    name="units"
+    value={units}
+    onChange={handleUnitsChange}
+    className="input-field"
+    disabled={!newSubCategory} // Disable if no subcategory is selected
+  />
+  <input
+    type="number"
+    placeholder="Cost per Unit"
+    name="costPerUnit"
+    value={costPerUnit}
+    onChange={handleCostPerUnitChange}
+    className="input-field"
+    disabled={!newSubCategory} // Disable if no subcategory is selected
+  />
+  <input
+    type="text"
+    placeholder="Total Amount"
+    name="totalAmount"
+    value={totalAmount}
+    readOnly
+    className="input-field"
+    disabled={!newSubCategory} // Disable if no subcategory is selected
+  />
+  <select
+    className='input-field'
+    value={paymentType}
+    onChange={(e) => setPaymentType(e.target.value)}
+    disabled={!newSubCategory} // Disable if no subcategory is selected
+  >
+    <option value="Unpaid">Unpaid</option>
+    <option value="Cash">Cash</option>
+    <option value="Meezan Bank">Meezan Bank</option>
+    <option value="HBL Bank">HBL Bank</option>
+  </select>
+  <button type="submit" className="submit-btn" disabled={!newSubCategory || isSubmitting}>
+    {isSubmitting ? 'Adding...' : 'Add'}
+  </button>
+</form>
 
-      <input
-          type="text"
-          placeholder="Product Name"
-          name="ProductName"
-          value={ProductName}
-          onChange={(e)=> setProductName(e.target.value)}
-          className="input-field"
-      />
-        <input
-          type="number"
-          placeholder="Units"
-          name="units"
-          value={units}
-          onChange={handleUnitsChange}
-          className="input-field"
-        />
-        <input
-          type="number"
-          placeholder="Cost per Unit"
-          name="costPerUnit"
-          value={costPerUnit}
-          onChange={handleCostPerUnitChange}
-          className="input-field"
-        />
+
+      <div className="subcategory-section">
+    <select className='input-field-subcategory' value={newSubCategory} onChange={(e) => setNewSubCategory(e.target.value)}>
+      <option value="">All</option>
+      {Array.isArray(subCategories) && subCategories.map((subCategory, index) => (
+      <option key={index} value={subCategory}>{subCategory}</option>
+      ))}
+    </select>
+
+
         <input
           type="text"
-          placeholder="Total Amount"
-          name="totalAmount"
-          value={totalAmount}
-          readOnly
+          placeholder="New SubCategory"
+          value={newSubCategory}
+          onChange={(e) => setNewSubCategory(e.target.value)}
           className="input-field"
         />
-        <select className='input-field' value={paymentType} onChange={(e) => setPaymentType(e.target.value)}>
-          <option value="Unpaid">Unpaid</option>
-          <option value="Cash">Cash</option>
-          <option value="Meezan Bank">Meezan Bank</option>
-          <option value="HBL Bank">HBL Bank</option>
-        </select>
-        <button type="submit" className="submit-btn" disabled={isSubmitting}>
-          {isSubmitting ? 'Adding...' : 'Add'}
-        </button>
-      </form>
+        <button onClick={handleAddSubCategory} className="submit-btn0k">Add SubCategory</button>
+      </div>
 
       <table className="inventory-table">
         <thead>
           <tr>
             <th>ID</th>
+            <th>Sub Category</th>
             <th>Product Name</th>
             <th>Units</th>
             <th>Cost per Unit</th>
@@ -208,35 +302,39 @@ const BuyPage = () => {
           </tr>
         </thead>
         <tbody>
-          {inventory.map((item, key) => (
-            <tr key={item._id}>
-              <td>{key + 1}</td>
-              <td>{item.Product}</td>
-              <td>{item.quantity}</td>
-              <td>{item.costPerUnit}</td>
-              <td>{item.totalAmount}</td>
-              <td>{formatDate(item.createdAt)}</td>
-              <td>
-                <button
-                  className="delete-btn"
-                  onClick={() => handleDelete(item._id)}
-                  disabled={deletingId === item._id}
-                >
-                  {deletingId === item._id ? 'Deleting...' : 'Delete'}
-                </button>
-                {item.quantity > 0 ? (
-                  <button className="add-sale-btn" onClick={() => handleAddSale(item)}>Add Sale</button>
-                ) : (
-                  <button className="add-sale-btn-disable" onClick={() => handleAddSale(item)} disabled>Add Sale</button>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
+  {inventory
+    .filter(item => !newSubCategory || item.SubCategory === newSubCategory) // Filter based on the selected subcategory
+    .map((item, key) => (
+      <tr key={item._id}>
+        <td>{key + 1}</td>
+        <td>{item.SubCategory}</td>
+        <td>{item.Product}</td>
+        <td>{item.quantity}</td>
+        <td>{item.costPerUnit}</td>
+        <td>{item.totalAmount}</td>
+        <td>{formatDate(item.createdAt)}</td>
+        <td>
+          <button
+            className="delete-btn"
+            onClick={() => handleDelete(item._id)}
+            disabled={deletingId === item._id}
+          >
+            {deletingId === item._id ? 'Deleting...' : 'Delete'}
+          </button>
+          {item.quantity > 0 ? (
+            <button className="add-sale-btn" onClick={() => handleAddSale(item)}>Add Sale</button>
+          ) : (
+            <button className="add-sale-btn-disable" onClick={() => handleAddSale(item)} disabled>Add Sale</button>
+          )}
+        </td>
+      </tr>
+    ))}
+</tbody>
+
         <tfoot>
           <tr>
             <td className='footer-cell'>Total Records: {inventory.length}</td>
-            <td className='footer-cell' colSpan="2">Net Quantity: {calculateNetQuantity(inventory)}</td>
+            <td className='footer-cell' colSpan="3">Net Quantity: {calculateNetQuantity(inventory)}</td>
             <td className='footer-cell-net-total' colSpan="2">Net Amount: {calculateNetTotalAmount(inventory)}</td>
           </tr>
         </tfoot>

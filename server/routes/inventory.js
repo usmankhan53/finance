@@ -84,7 +84,7 @@ router.delete('/inventory/:category', async (req, res) => {
 router.put('/purchase/:category', async (req, res) => {
     try {
       const { category } = req.params;
-      const { Category,Product, quantity, costPerUnit , paymentType } = req.body;
+      const { Category,SubCategory,Product, quantity, costPerUnit , paymentType } = req.body;
   
       // Find the inventory item by category
       let inventoryItem = await Inventory.findOne({ category });
@@ -99,6 +99,7 @@ router.put('/purchase/:category', async (req, res) => {
       // Create new purchase record
       const purchaseRecord = {
         Category,
+        SubCategory,
         Product,
         quantity,
         costPerUnit,
@@ -170,7 +171,7 @@ router.put('/purchase/:category/:purchaseId', async (req, res) => {
 router.put('/sales/:category/:purchaseId', async (req, res) => {
     try {
       const { category, purchaseId } = req.params;
-      const { Category,Product,unitsSold, unitPrice, clientName, clientContact, paymentType } = req.body;
+      const { Category,SubCategory,Product,unitsSold, unitPrice, clientName, clientContact, paymentType } = req.body;
   
       // Find the inventory item by category
       let inventoryItem = await Inventory.findOne({ category });
@@ -202,6 +203,7 @@ router.put('/sales/:category/:purchaseId', async (req, res) => {
       // Add the sales record to the sales array
       const saleRecord = {
         Category,
+        SubCategory,
         Product,
         unitsSold,
         unitPrice,
@@ -304,5 +306,48 @@ router.put('/deletesale/:category/:saleId', async (req, res) => {
     }
 });
 
-module.exports = router;
 
+// PUT route to add a new subcategory
+router.put('/inventory/:category/subcategories', async (req, res) => {
+  const { category } = req.params;
+  const { newSubCategory } = req.body;
+
+  if (!newSubCategory) {
+    return res.status(400).json({ error: 'New subcategory is required' });
+  }
+
+  try {
+    const inventory = await Inventory.findOne({ category });
+
+    if (!inventory) {
+      return res.status(404).json({ error: 'Inventory not found' });
+    }
+
+    inventory.SubCategories.push(newSubCategory);
+    await inventory.save();
+
+    res.status(200).json(inventory);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Fetch SubCategories by category
+router.get('/inventory/:category/subcategories', async (req, res) => {
+  const { category } = req.params;
+
+  try {
+    const inventory = await Inventory.findOne({ category }, 'SubCategories');
+
+    if (!inventory) {
+      return res.status(404).json({ error: 'Inventory not found' });
+    }
+
+    res.status(200).json(inventory.SubCategories);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+module.exports = router;

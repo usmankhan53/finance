@@ -47,6 +47,7 @@ const PurchasesTable = () => {
         <thead>
           <tr>
             <th>ID</th>
+            <th>Sub Category</th>
             <th>Product Name</th>
             <th>Number of Units</th>
             <th>Cost Per Unit</th>
@@ -59,6 +60,7 @@ const PurchasesTable = () => {
           {PurchasesData.map((purchase, key) => (
             <tr key={purchase.id}>
               <td>{key + 1}</td>
+              <td>{purchase.SubCategory}</td>
               <td>{purchase.Product}</td>
               <td>{purchase.quantity}</td>
               <td>{purchase.costPerUnit}</td>
@@ -71,7 +73,7 @@ const PurchasesTable = () => {
         <tfoot>
           <tr>
             <td className="footer-cell">Total Records: {PurchasesData.length}</td>
-            <td className="footer-cell" colSpan="2">Total Units {calculateTotalUnitsSold(PurchasesData)}</td>
+            <td className="footer-cell" colSpan="3">Total Units {calculateTotalUnitsSold(PurchasesData)}</td>
             <td colSpan="2" className="footer-cell">Total Amount: {calculateTotalAmount(PurchasesData)}</td>
           </tr>
         </tfoot>

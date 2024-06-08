@@ -62,6 +62,7 @@ const BankPurchase = () => {
           <tr>
             <th>ID</th>
             <th>Category</th>
+            <th>Sub Category</th>
             <th>Product Name</th>
             <th>Number of Units</th>
             <th>Cost Per Unit</th>
@@ -75,6 +76,7 @@ const BankPurchase = () => {
             <tr key={index}>
               <td>{index + 1}</td>
               <td>{purchase.Category}</td>
+              <td>{purchase.SubCategory}</td>
               <td>{purchase.Product}</td>
               <td>{purchase.quantity}</td>
               <td>{purchase.costPerUnit}</td>
@@ -87,7 +89,7 @@ const BankPurchase = () => {
         <tfoot>
           <tr>
             <td className={styles['footer-cell']}>Total Records: {filteredPurchasesData.length}</td>
-            <td colSpan="3" className={styles['footer-cell']}>Total Units {calculateTotalUnitsSold(filteredPurchasesData)}</td>
+            <td colSpan="5" className={styles['footer-cell']}>Total Units {calculateTotalUnitsSold(filteredPurchasesData)}</td>
             <td colSpan="2" className={styles['footer-cell']}>Total Amount: {calculateTotalAmount(filteredPurchasesData)}</td>
           </tr>
         </tfoot>

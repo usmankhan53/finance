@@ -50,6 +50,7 @@ const SalesTable = () => {
         <thead>
           <tr>
             <th>ID</th>
+            <th>Sub Category</th>
             <th>Product Name</th>
             <th>Buying Price</th>
             <th>Selling Price</th>
@@ -66,6 +67,7 @@ const SalesTable = () => {
           {salesData.map((sale, key) => (
             <tr key={sale.id}>
               <td>{key + 1}</td>
+              <td>{sale.SubCategory}</td>
               <td>{sale.Product}</td>
               <td>{sale.costPerUnit}</td>
               <td>{sale.unitPrice}</td>
@@ -81,8 +83,8 @@ const SalesTable = () => {
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan="3" className="footer-cell">Total Records: {salesData.length}</td>
-            <td className="footer-cell">Total Units Sold: {calculateTotalUnitsSold(salesData)}</td>
+            <td colSpan="1" className="footer-cell">Total Records: {salesData.length}</td>
+            <td className="footer-cell" colSpan="5">Total Units Sold: {calculateTotalUnitsSold(salesData)}</td>
             <td className="footer-cell">Total Amount: {calculateTotalAmount(salesData)}</td>
             <td className="footer-cell">Total Profit/Loss: {calculateTotalProfit(salesData)}</td>
             <td colSpan="4"></td>

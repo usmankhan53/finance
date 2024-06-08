@@ -5,7 +5,7 @@ import dayjs from 'dayjs'; // Import dayjs for date manipulation
 
 const SellPage = () => {
   const location = useLocation();
-  const { category,Product,costPerUnit, _id } = location.state || {};
+  const { category,Product,costPerUnit, _id, newSubCategory } = location.state || {};
 
   const [unitsSold, setUnitsSold] = useState('');
   const [unitPrice, setUnitPrice] = useState('');
@@ -168,6 +168,7 @@ const handleUnitsSoldChange = (e) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
          Category: category,
+         SubCategory: newSubCategory,
           Product,
           unitsSold,
           unitPrice,
@@ -215,8 +216,10 @@ const handleUnitsSoldChange = (e) => {
       
     <h3>Category: {category.toUpperCase()} </h3> 
     <h4>Product Name: {Product.toUpperCase()} </h4> 
+    <h5>Sub Category: {newSubCategory.toUpperCase()}</h5>
     <p>Units Left: {unitsLeft}</p>
     <p>Sub Unit Cost: {costPerUnit}</p>
+    
   
 
       <div className="available-stocks"><h6>Total Available Stocks: {availableStocks}</h6></div>
@@ -296,6 +299,7 @@ const handleUnitsSoldChange = (e) => {
         <thead>
           <tr>
             <th>ID</th>
+            <th>Sub Category</th>
             <th>Product Name</th>
             <th>Buying Price</th>
             <th>Selling Price</th>
@@ -312,6 +316,7 @@ const handleUnitsSoldChange = (e) => {
           {filteredSalesData.map((sale,key) => (
             <tr key={sale.id}>
               <td>{key + 1}</td>
+              <td>{sale.SubCategory}</td>
               <td>{sale.Product}</td>
               <td>{sale.costPerUnit}</td>
               <td>{sale.unitPrice}</td>
