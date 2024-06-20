@@ -46,7 +46,7 @@ const BuyPage = () => {
 
   const fetchSubCategories = async () => {
     try {
-      const response = await fetch(`http://localhost:8001/inventory/${category}/subcategories`);
+      const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/inventory/${category}/subcategories`);
       if (!response.ok) throw new Error('Failed to fetch subcategories');
       const data = await response.json();
       console.log(data); // Log the response data to check its structure
@@ -86,7 +86,7 @@ const BuyPage = () => {
       return;
     }
 
-    const apiEndpoint = `http://localhost:8001/purchase/${category}`;
+    const apiEndpoint = `https://financelocal.netlify.app/.netlify/functions/app/purchase/${category}`;
     const method = 'PUT';
 
     try {
@@ -172,7 +172,7 @@ const BuyPage = () => {
     }
   
     try {
-      const response = await fetch(`http://localhost:8001/inventory/${category}/subcategories`, {
+      const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/inventory/${category}/subcategories`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newSubCategory }),
@@ -181,7 +181,7 @@ const BuyPage = () => {
       if (!response.ok) throw new Error('Failed to add subcategory');
   
       // Fetch the updated list of subcategories for the current category
-      const updatedSubCategoriesResponse = await fetch(`http://localhost:8001/inventory/${category}/subcategories`);
+      const updatedSubCategoriesResponse = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/inventory/${category}/subcategories`);
       if (!updatedSubCategoriesResponse.ok) throw new Error('Failed to fetch updated subcategories');
       const updatedSubCategoriesData = await updatedSubCategoriesResponse.json();
   

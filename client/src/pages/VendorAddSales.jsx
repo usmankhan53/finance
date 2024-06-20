@@ -88,7 +88,7 @@ const VendorAddSales = () => {
     try {
       // Send form data to APIs
       await Promise.all([
-        fetch(`http://localhost:8001/sales/${category}/${purchases[selectedRow]?._id}`, {
+        fetch(`https://financelocal.netlify.app/.netlify/functions/app/sales/${category}/${purchases[selectedRow]?._id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ const VendorAddSales = () => {
             paymentType: newRecord.paymentStatus,
           }),
         }),
-        fetch(`http://localhost:8001/vendor/${vendorName}`, {
+        fetch(`https://financelocal.netlify.app/.netlify/functions/app/vendor/${vendorName}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

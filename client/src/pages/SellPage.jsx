@@ -163,7 +163,7 @@ const handleUnitsSoldChange = (e) => {
     }
     
     try {
-      const response = await fetch(`http://localhost:8001/sales/${category}/${_id}`, {
+      const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/sales/${category}/${_id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
