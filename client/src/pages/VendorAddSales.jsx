@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import styles from '../css/VendorAddSales.module.css';
 
 const VendorAddSales = () => {
@@ -8,6 +10,7 @@ const VendorAddSales = () => {
   const { vendorName, vendorContact } = location.state || {};
 
   const [categories, setCategories] = useState([]);
+  const [capitalAmount, setCapitalAmount] = useState('');
   const [availableStocks, setAvailableStocks] = useState(0);
   const [exceedingStocks, setExceedingStocks] = useState(false);
   const [purchases, setPurchases] = useState([]);
@@ -19,7 +22,8 @@ const VendorAddSales = () => {
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+    fetchCapitalAmount();
+  }, [capitalAmount]);
 
   const fetchCategories = async () => {
     try {
@@ -34,6 +38,18 @@ const VendorAddSales = () => {
       console.error('Error fetching categories:', error);
     }
   };
+
+  const fetchCapitalAmount = () => {
+    fetch('http://localhost:8001/capital')
+      .then(response => response.json())
+      .then(data => {
+        if (data.capitalAmount) {
+          setCapitalAmount(data.capitalAmount);
+        }
+      })
+      .catch(error => console.error('Error fetching capital:', error));
+  };
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -77,7 +93,7 @@ const VendorAddSales = () => {
       
       category,
       SubCategory: purchases[selectedRow].SubCategory,
-      Product: purchases[selectedRow].Product,
+      // Product: purchases[selectedRow].Product,
       unitsSold: unitsSold ? parseInt(unitsSold) : undefined,
       unitPrice: unitPrice ? parseFloat(unitPrice) : undefined,
       costPerUnit: purchases[selectedRow].costPerUnit,
@@ -95,7 +111,7 @@ const VendorAddSales = () => {
           },
           body: JSON.stringify({
             SubCategory: newRecord.SubCategory,
-            Product: newRecord.Product,
+            // Product: newRecord.Product,
             unitsSold: newRecord.unitsSold,
             unitPrice: newRecord.unitPrice,
             costPerUnit: newRecord.costPerUnit,
@@ -115,7 +131,7 @@ const VendorAddSales = () => {
             vendorRecord: {
               category: newRecord.category,
               SubCategory: newRecord.SubCategory,
-              Product: newRecord.Product,
+              // Product: newRecord.Product,
               unitsSold: newRecord.unitsSold,
               unitPrice: newRecord.unitPrice,
               costPerUnit: newRecord.costPerUnit,
@@ -125,9 +141,43 @@ const VendorAddSales = () => {
             },
           }),
         }),
+        fetch('http://localhost:8001/capital', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ capitalAmount: Number(capitalAmount) + (Number(newRecord.unitsSold) * Number(newRecord.unitPrice))})
+        })
+        .then(response => response.json())
+        .then(data => {
+          setCapitalAmount(data.capitalAmount); 
+        })
+        .catch(error => console.error('Error updating capital:', error))
+
+        
       ]);
+
+      
+      const transactionData = {
+        Category: newRecord.category,
+        SubCategory: newRecord.SubCategory,
+        transactionType: 'Sale',
+        amount: Number(newRecord.unitsSold) * Number(newRecord.unitPrice)
+      };
+
+      const response = await fetch("http://localhost:8001/capital/transaction", {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(transactionData),
+      });
+
+ 
+      if (!response.ok) {
+        throw new Error('Failed to add tracaction record');
+      }      
+
       console.log('Data sent successfully');
-      alert("Vendor new Record Added Successfully");
+      toast.success("Vendor new Record Added Successfully");
       fetchCategories();
 
        // Update selected row and its quantity
@@ -168,13 +218,14 @@ const VendorAddSales = () => {
 
   return (
     <div className={styles.container}>
-
+   <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
       <div className={styles.NameOfVendor}>
       <strong>VENDOR NAME: </strong>{vendorName.toUpperCase()}
       </div>
       
 
       <div className={styles.info}>
+        <strong>CURRENT CAPITAL : {capitalAmount}</strong><br />
         <strong>AVAILABLE STOCKS : </strong>{availableStocks}<br />
         <strong>SUB UNTS LEFT : </strong>{selectedRow !== null ? purchases[selectedRow].quantity : ''}<br />
         <strong>COST PER UNIT :  </strong>{selectedRow !== null ? purchases[selectedRow].costPerUnit : ''}
@@ -236,7 +287,6 @@ const VendorAddSales = () => {
             <th>ID</th>
             <th>Category</th>
             <th>Sub Category</th>
-            <th>Product Name</th>
             <th>Quantity</th>
             <th>Cost Per Unit</th>
             <th>Total Amount</th>
@@ -250,7 +300,6 @@ const VendorAddSales = () => {
               <td>{index + 1}</td>
               <td>{category}</td>
               <td>{purchase.SubCategory}</td>
-              <td>{purchase.Product}</td>
               <td>{purchase.quantity}</td>
               <td>{purchase.costPerUnit}</td>
               <td>{purchase.totalAmount}</td>

@@ -24,22 +24,33 @@ router.post('/inventory', async (req, res) => {
     }
 });
 
-// UPDATE API to update inventory item
-router.put('/inventory/:category', async (req, res) => {
-    try {
-        const category = req.params.category;
-        const { purchases, sales } = req.body;
 
-        // Update the inventory item
-        await Inventory.updateOne({ category }, {
-            $set: { purchases, sales }
-        });
+// Update API to update category name of inventory item
+router.put('/inventory/:selectedCategory', async (req, res) => {
+  try {
+      const category = req.params.selectedCategory;
+      const { newName } = req.body; // Assuming newName is the new category name
+      console.log(category);
+      console.log(newName);
+      // Update the inventory item
+      const updatedItem = await Inventory.findOneAndUpdate(
+          { category }, // Find the item by the current category name
+          { $set: { category: newName } }, // Update only the category field
+          { new: true } // Return the updated item
+      );
 
-        res.json({ message: 'Inventory item updated successfully' });
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
+      console.log(updatedItem);
+ 
+      if (!updatedItem) {
+          return res.status(404).json({ message: 'Inventory item not found' });
+      }
+
+      res.json({ message: 'Inventory item updated successfully', updatedItem });
+  } catch (error) {
+      res.status(400).json({ message: error.message });
+  }
 });
+
 
 // GET API to retrieve all inventory items
 router.get('/inventory', async (req, res) => {
@@ -78,6 +89,7 @@ router.delete('/inventory/:category', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
 
 
 // PUT route to update a purchase record for a specific category
@@ -331,6 +343,40 @@ router.put('/inventory/:category/subcategories', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+// DELETE route to delete a subcategory
+router.delete('/inventory/:category/subcategories/:subCategory', async (req, res) => {
+  const { category, subCategory } = req.params;
+
+  try {
+    // Find the inventory item by category
+    const inventory = await Inventory.findOne({ category });
+
+    if (!inventory) {
+      return res.status(404).json({ error: 'Inventory not found' });
+    }
+
+    // Check if the subcategory exists in the inventory
+    const subCategoryIndex = inventory.SubCategories.indexOf(subCategory);
+
+    if (subCategoryIndex === -1) {
+      return res.status(404).json({ error: 'Subcategory not found in inventory' });
+    }
+
+    // Remove the subcategory from the array
+    inventory.SubCategories.splice(subCategoryIndex, 1);
+
+    // Save the updated inventory
+    await inventory.save();
+
+    // Optionally, you can return the updated inventory or a success message
+    res.status(200).json({ message: 'Subcategory deleted successfully', inventory });
+  } catch (error) {
+    console.error('Error deleting subcategory:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 // Fetch SubCategories by category
 router.get('/inventory/:category/subcategories', async (req, res) => {

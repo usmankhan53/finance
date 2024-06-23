@@ -6,8 +6,8 @@ const AutoLogout = ({ onLogout }) => {
   const handleActivity = () => {
     clearTimeout(timeoutId); // Reset the timer
     const newTimeoutId = setTimeout(() => {
-      onLogout(); // Call logout function after 10 minutes of inactivity
-    }, 10 * 60 * 1000); // 10 minutes in milliseconds
+      onLogout(); // Call logout function after 1 hour of inactivity
+    }, 60 * 60 * 1000); // 10 minutes in milliseconds
     setTimeoutId(newTimeoutId);
   };
 

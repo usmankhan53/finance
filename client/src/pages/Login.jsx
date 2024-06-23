@@ -1,22 +1,16 @@
 import React, { useState } from 'react';
-import '../css/LoginForm.css';
-import {
-  MDBBtn,
-  MDBContainer,
-  MDBRow,
-  MDBCol,
-  MDBCard,
-  MDBCardBody,
-  MDBInput
-} from 'mdb-react-ui-kit';
+import styles from '../css/LoginForm.module.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function LoginForm({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    
+
     // Prepare data to be sent to the backend
     const loginData = {
       username,
@@ -24,7 +18,12 @@ function LoginForm({ onLogin }) {
     };
 
     try {
-      const response = await fetch('https://financelocal.netlify.app/.netlify/functions/app/login', { // Adjust the URL as per your backend API
+      // Simulate a login request (replace with actual fetch request)
+      console.log('Logging in with:', loginData);
+
+      // Simulating successful login
+      // Replace with actual API call
+      const response = await fetch('https://financelocal.netlify.app/.netlify/functions/app/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -37,61 +36,57 @@ function LoginForm({ onLogin }) {
       }
 
       const data = await response.json();
+      onLogin(data.token); // Assuming the API returns a token upon successful login
 
-      
-      // Handle login and save token
-      onLogin(data.token);
-      alert("Login Successfully");
+      // Reset form fields after successful login
+      setUsername('');
+      setPassword('');
+
+      // Update login status
+      toast.success("Login successfully")
+
+   
+
     } catch (error) {
-      alert("Wrong Credientials");
       console.error('Error:', error);
+      toast.error("Login Failed")
     }
   };
 
+ 
+
   return (
-    <MDBContainer fluid className='background-radial-gradient overflow-hidden'>
-      <MDBRow className="w-100 d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-        <MDBCol md='6' className='text-center text-md-start d-flex flex-column justify-content-center'>
-          <h1 className="my-5 display-3 fw-bold ls-tight px-3" style={{color: 'hsl(218, 81%, 95%)'}}>
-            The best offer <br />
-            <span style={{color: 'hsl(218, 81%, 75%)'}}>for your business</span>
-          </h1>
-          <p className='px-3' style={{color: 'hsl(218, 81%, 85%)'}}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Eveniet, itaque accusantium odio, soluta, corrupti aliquam
-            quibusdam tempora at cupiditate quis eum maiores libero
-            veritatis? Dicta facilis sint aliquid ipsum atque?
-          </p>
-        </MDBCol>
-        <MDBCol md='6' className='position-relative'>
-          <div id="radius-shape-1" className="position-absolute rounded-circle shadow-5-strong"></div>
-          <div id="radius-shape-2" className="position-absolute shadow-5-strong"></div>
-          <MDBCard className='my-5 bg-glass'>
-            <MDBCardBody className='p-5'>
-              <form onSubmit={handleLogin}>
-                <MDBInput 
-                  wrapperClass='mb-4' 
-                  label='Username' 
-                  id='form3' 
-                  type='text' 
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-                <MDBInput 
-                  wrapperClass='mb-4' 
-                  label='Password' 
-                  id='form4' 
-                  type='password' 
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <MDBBtn type="submit" className='w-100 mb-4' size='md'>Sign in</MDBBtn>
-              </form>
-            </MDBCardBody>
-          </MDBCard>
-        </MDBCol>
-      </MDBRow>
-    </MDBContainer>
+    <div className={styles.loginContainer}>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+
+      <form className={styles.loginForm} onSubmit={handleLogin}>
+        <div className={styles.formGroup}>
+          <label className={styles.formLabel} htmlFor='username'>Username</label>
+          <input
+            className={styles.formInput}
+            type='text'
+            id='username'
+            value={username}
+            placeholder='Enter your username'
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.formLabel} htmlFor='password'>Password</label>
+          <input
+            className={styles.formInput}
+            type='password'
+            id='password'
+            value={password}
+            placeholder='Enter your password'
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <button className={styles.submitBtn} type='submit'>Sign in</button>
+      </form>
+    </div>
   );
 }
 

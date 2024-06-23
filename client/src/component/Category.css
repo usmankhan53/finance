@@ -1,152 +1,323 @@
+
+/* Make sure the footer is placed at the bottom */
+
+
 .category-container-full {
-  height: 100vh;
-  padding: 20px;
-  background-color: #ddd;
-}
-
-.business-name {
-  font-size: 20px;
-  color: white; /* Set text color */
-
-  text-transform: uppercase; /* Convert text to uppercase */
-  font-family: 'Arial', sans-serif; /* Set font family */
-  background-color: #0056b3; /* Set background color */
-  padding: 10px 20px; /* Add padding */
-  border-radius: 10px; /* Add border radius for rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add box shadow for depth */
-}
-
-.header-btns-container{
-  display: flex;
-  flex-direction: row;
-  gap: 30px;
-}
-
-
-/* Button styles */
-.add-vendor-btn {
-  background-color: #b19a34;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  margin-left: 50%;
-  height: 50px;
-  width: 300px;
-  cursor: pointer;
-  border-radius: 30px;
-  transition: background-color 0.3s;
-}
-.sales-statments-btn, .purchase-statments-btn {
-  display: inline-block;
-  padding: 10px 20px;
-  border-radius: 30px;
-  height: 50px;
-  cursor: pointer;
-  text-align: center;
-  font-size: 16px; /* Ensure the font size is responsive */
-  transition: background-color 0.3s;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.sales-statments-btn {
-  background-color: #548750;
-  color: white;
-  border: none;
-}
-
-.purchase-statments-btn {
-  background-color: #ff4c29;
-  color: white;
-  border: none;
-}
-
-/* Responsive styles */
-@media (max-width: 768px) {
-  .sales-statments-btn, .purchase-statments-btn {
-    padding: 8px 16px; /* Adjust padding for smaller screens */
-    height: auto; /* Allow height to adjust */
-    font-size: 14px; /* Adjust font size for smaller screens */
-    border-radius: 25px; /* Slightly smaller border radius */
-  }
-}
-
-@media (max-width: 480px) {
-  .sales-statments-btn, .purchase-statments-btn {
-    padding: 6px 12px; /* Further adjust padding for very small screens */
-    font-size: 12px; /* Smaller font size for very small screens */
-    border-radius: 20px; /* Smaller border radius for very small screens */
-  }
-}
-
-
-.add-vendor-btn:hover, .sales-statments-btn:hover , .purchase-statments-btn:hover {
-  background-color: #0056b3;
-}
-
-.container-input-category {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.add-category-btn {
- left: 300px;
- top: 34px;
-}
-
-.container-center{
-  margin-top: -30px;
-}
-
-.input-category {
-  width: 300px;
-}
-
-.cards-container {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(300px, 1fr)); /* Display three categories per row */
-  grid-gap: 20px;
-}
-
-.card {
-  background-color: #f0f0f0;
-  border-radius: 10px;
-  padding: 20px;
-}
-
-.card-body {
+  min-height: 100%;
   display: flex;
   flex-direction: column;
 }
 
+
+.business-name {
+  margin-top: 30px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #333;
+}
+
+.header-btns-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.header-btns-container button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.purchase-statements-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.sales-statements-btn {
+  background-color: #2196F3;
+  color: white;
+}
+
+.add-vendor-btn {
+  background-color: #FF9800;
+  color: white;
+}
+
+.balance-sheet-btn{
+  background-color: #f2f2f2;
+  color: black;
+}
+
+.balance-sheet-btn:hover{
+  background-color: #e6e6e6
+}
+
+.header-btns-container button:hover {
+  opacity: 0.8;
+}
+
+/* Category Input Styles */
+.container-center {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  flex: 1;
+}
+
+.container-input-category {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-category {
+  padding: 10px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.add-category-btn {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-category-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.add-category-btn:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+/* Card Styles */
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.card {
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-body {
+  text-align: left;
+}
+
 .card-title {
-  font-size: 20px;
+  font-size: 1.5rem;
   margin-bottom: 10px;
 }
 
 .stock-info {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .card-buttons {
   display: flex;
   justify-content: space-between;
-  margin-top: auto;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.footer-category {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
-  background-color: #139c49;
-  padding: 20px 0; /* Add some padding for better spacing */
-  color: white; /* Set text color */
+.card-buttons .btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  flex: 1 1 calc(33% - 10px); /* Adjust button size */
 }
 
-
-.new-text-style {
+.card-buttons .btn-primary {
+  background-color: #2196F3;
   color: white;
+}
+
+.card-buttons .btn-danger {
+  background-color: #f44336;
+  color: white;
+}
+
+.card-buttons .btn-info {
+  background-color: #00bcd4;
+  color: white;
+}
+
+.card-buttons .btn:hover {
+  opacity: 0.8;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 80%;
+  max-width: 500px;
+  text-align: left;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: red;
+}
+
+.close-btn:hover{
+  background-color:white;
+}
+
+.modal-body {
+  margin: 20px 0;
+}
+
+.modal-footer {
+  text-align: right;
+}
+
+.go-btn, .save-btn {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.go-btn:hover, .save-btn:hover {
+  opacity: 0.8;
+}
+
+/* Search Input Styles */
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  padding: 10px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+/* Pagination Styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin-top: 3px;
+  flex-wrap: wrap; /* Ensure pagination items wrap on smaller screens */
+  margin-bottom: 100px; /* Add margin to the bottom to prevent overlap with the footer */
+}
+
+.pagination li {
+  margin: 5px; /* Adjust margin for better spacing on smaller screens */
+}
+
+.pagination a {
+  padding: 8px 16px;
+  text-decoration: none;
+  color: #333;
+  background-color: #f2f2f2;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.pagination a:hover {
+  background-color: #ddd;
+}
+
+.pagination .active a {
+  background-color: #4CAF50; /* Change this to your desired active background color */
+  color: white;
+  border: 1px solid #4CAF50; /* Change this to match the active background color */
+}
+
+/* Responsive design for pagination */
+@media (max-width: 600px) {
+  .pagination a {
+    padding: 6px 12px; /* Reduce padding for smaller screens */
+    font-size: 14px; /* Adjust font size for readability */
+  }
+}
+
+/* Category.css */
+
+.loading-spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+}
+
+
+
+
+@media (max-width: 768px) {
+  .header-btns-container {
+    flex-direction: column;
+  }
+
+  .container-input-category {
+    flex-direction: column;
+  }
+
+  .input-category {
+    width: 100%;
+  }
 }

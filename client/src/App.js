@@ -19,6 +19,7 @@ import PurchaseStatement from './pages/PurchaseStatement';
 import CashPurchase from './pages/PurchaseBalanceSheets/CashPurchase';
 import BankPurchase from './pages/PurchaseBalanceSheets/BankPurchase';
 import UnpaidPurchase from './pages/PurchaseBalanceSheets/UnpaidPurchase';
+import BalanceSheet from './pages/BalanceSheet';
 
 function App() {
   const [token, setToken] = useState(null);
@@ -127,6 +128,11 @@ function App() {
           path="/PurchaseStatements/Unpaid"
           element={token ? <UnpaidPurchase onLogout={handleLogout} /> : <Navigate to="/" />}
      />
+
+    <Route
+    path='/balancesheet'
+    element={token ? <BalanceSheet onLogout={handleLogout} /> : <Navigate to="/" />}
+    />
       </Routes>
     </Router>
   );

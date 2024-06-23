@@ -9,6 +9,7 @@ const SellPage = () => {
 
   const [unitsSold, setUnitsSold] = useState('');
   const [unitPrice, setUnitPrice] = useState('');
+  const [capitalAmount, setCapitalAmount] = useState('');
   const [amount, setAmount] = useState('');
   const [profit, setProfit] = useState('');
   const [unitsLeft, setUnitsLeft] = useState(0);
@@ -42,10 +43,23 @@ const SellPage = () => {
   };
 
   
+  const fetchCapitalAmount = () => {
+    fetch('http://localhost:8001/capital')
+      .then(response => response.json())
+      .then(data => {
+        if (data.capitalAmount) {
+          setCapitalAmount(data.capitalAmount);
+        }
+      })
+      .catch(error => console.error('Error fetching capital:', error));
+  };
+
+  
   
 useEffect(()=>{
   fetchSalesData();
-}, [])
+  fetchCapitalAmount();
+}, [salesData, capitalAmount])
 
   // Function to update amount and profit
   const updateAmountAndProfit = () => {
@@ -169,7 +183,6 @@ const handleUnitsSoldChange = (e) => {
         body: JSON.stringify({
          Category: category,
          SubCategory: newSubCategory,
-          Product,
           unitsSold,
           unitPrice,
           clientName,
@@ -178,8 +191,41 @@ const handleUnitsSoldChange = (e) => {
         }),
       });
 
+      fetch('http://localhost:8001/capital', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ capitalAmount: Number(capitalAmount) + (Number(unitPrice) * Number(unitsSold)) })
+      })
+      .then(response => response.json())
+      .then(data => {
+      
+        setCapitalAmount(data.capitalAmount);
+      })
+      .catch(error => console.error('Error updating capital:', error));
+
+      const transactionData = {
+        Category: category,
+        SubCategory: newSubCategory,
+        transactionType: 'Sale',
+        amount: unitsSold * unitPrice
+      };
+
+      const response2 = await fetch("http://localhost:8001/capital/transaction", {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(transactionData),
+      });
+
+
       if (!response.ok) {
         throw new Error('Failed to add sale');
+      }
+
+      
+      if (!response2.ok) {
+        throw new Error('Failed to update capital amount');
       }
 
       const data = await response.json();
@@ -215,10 +261,10 @@ const handleUnitsSoldChange = (e) => {
     <div className="sell-container">
       
     <h3>Category: {category.toUpperCase()} </h3> 
-    <h4>Product Name: {Product.toUpperCase()} </h4> 
     <h5>Sub Category: {newSubCategory.toUpperCase()}</h5>
     <p>Units Left: {unitsLeft}</p>
     <p>Sub Unit Cost: {costPerUnit}</p>
+    <p><strong>Current Capital:</strong> {capitalAmount}</p>
     
   
 

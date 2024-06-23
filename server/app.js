@@ -29,6 +29,7 @@ app.use(express.json());
 app.use(require('./routes/user'));
 app.use(require('./routes/inventory'));
 app.use(require('./routes/vendor'));
+app.use(require('./routes/capital'));
 
 
 

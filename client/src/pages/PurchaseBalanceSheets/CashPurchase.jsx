@@ -49,7 +49,7 @@ const CashPurchase = () => {
             <th>ID</th>
             <th>Category</th>
             <th>Sub Category</th>
-            <th>Product Name</th>
+            {/* <th>Product Name</th> */}
             <th>Number of Units</th>
             <th>Cost Per Unit</th>
             <th>Amount</th>
@@ -63,7 +63,7 @@ const CashPurchase = () => {
               <td>{index + 1}</td>
               <td>{purchase.Category}</td>
               <td>{purchase.SubCategory}</td>
-              <td>{purchase.Product}</td>
+              {/* <td>{purchase.Product}</td> */}
               <td>{purchase.quantity}</td>
               <td>{purchase.costPerUnit}</td>
               <td>{purchase.totalAmount}</td>
@@ -75,7 +75,7 @@ const CashPurchase = () => {
         <tfoot>
           <tr>
             <td className={styles['footer-cell']}>Total Records: {filteredPurchasesData.length}</td>
-            <td colSpan="5" className={styles['footer-cell']}>Total Units {calculateTotalUnitsSold(filteredPurchasesData)}</td>
+            <td colSpan="4" className={styles['footer-cell']}>Total Units {calculateTotalUnitsSold(filteredPurchasesData)}</td>
             <td colSpan="1" className={styles['footer-cell']}>Total Amount: {calculateTotalAmount(filteredPurchasesData)}</td>
           </tr>
         </tfoot>

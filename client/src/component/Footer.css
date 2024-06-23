@@ -1,0 +1,30 @@
+/* Footer Styles */
+.footer-category {
+    background-color: #139c49;
+    color: white;
+    padding: 10px;
+    width: 100%;
+  
+    text-align: center;
+    position: fixed;
+    bottom: 0; /* Ensure the footer sticks to the bottom */
+    left: 0; /* Ensure the footer spans the entire width */
+    clear: both; /* Ensure the footer clears any floating elements */
+}
+
+.footer-category a {
+    color: white;
+    text-decoration: none;
+}
+
+.footer-category a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive design for the footer */
+@media (max-width: 600px) {
+    .footer-category {
+        padding: 15px; /* Increase padding for better touch support on small devices */
+        font-size: 14px; /* Adjust font size for readability on smaller screens */
+    }
+}

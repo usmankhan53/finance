@@ -82,7 +82,7 @@ function Bank() {
             <th>Vendor Name</th>
             <th>Category</th>
             <th>Sub Category</th>
-            <th>Product Name</th>
+            {/* <th>Product Name</th> */}
             <th>Units Sold</th>
             <th>Unit Price</th>
             <th>Cost Per Unit</th>
@@ -99,7 +99,7 @@ function Bank() {
               <td>{record.vendorName}</td>
               <td>{record.category}</td>
               <td>{record.SubCategory}</td>
-              <td>{record.Product}</td>
+              {/* <td>{record.Product}</td> */}
               <td>{record.unitsSold}</td>
               <td>{record.unitPrice}</td>
               <td>{record.costPerUnit}</td>
@@ -113,7 +113,7 @@ function Bank() {
         <tfoot>
           <tr>
             <td colSpan="1" className="footer-cell">Total Records: {filteredRecords.length}</td>
-            <td className="footer-cell" colSpan="5">Total Units Sold: {calculateTotalUnitsSold(filteredRecords)}</td>
+            <td className="footer-cell" colSpan="4">Total Units Sold: {calculateTotalUnitsSold(filteredRecords)}</td>
             <td colSpan="3" className="footer-cell">Total Amount: {calculateTotalAmount(filteredRecords)}</td>
             <td colSpan="2" className="footer-cell">Total Profit/Loss: {calculateTotalProfit(filteredRecords)}</td>
           </tr>
