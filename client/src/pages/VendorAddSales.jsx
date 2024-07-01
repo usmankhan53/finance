@@ -27,7 +27,7 @@ const VendorAddSales = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('https://financelocal.netlify.app/.netlify/functions/app/inventory');
+      const response = await fetch('https://inventorybackend-flame.vercel.app/inventory');
       if (response.ok) {
         const data = await response.json();
         setCategories(data);
@@ -40,7 +40,7 @@ const VendorAddSales = () => {
   };
 
   const fetchCapitalAmount = () => {
-    fetch('http://localhost:8001/capital')
+    fetch('https://inventorybackend-flame.vercel.app/capital')
       .then(response => response.json())
       .then(data => {
         if (data.capitalAmount) {
@@ -104,7 +104,7 @@ const VendorAddSales = () => {
     try {
       // Send form data to APIs
       await Promise.all([
-        fetch(`https://financelocal.netlify.app/.netlify/functions/app/sales/${category}/${purchases[selectedRow]?._id}`, {
+        fetch(`https://inventorybackend-flame.vercel.app/sales/${category}/${purchases[selectedRow]?._id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -122,7 +122,7 @@ const VendorAddSales = () => {
             paymentType: newRecord.paymentStatus,
           }),
         }),
-        fetch(`https://financelocal.netlify.app/.netlify/functions/app/vendor/${vendorName}`, {
+        fetch(`https://inventorybackend-flame.vercel.app/vendor/${vendorName}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ const VendorAddSales = () => {
             },
           }),
         }),
-        fetch('http://localhost:8001/capital', {
+        fetch('https://inventorybackend-flame.vercel.app/capital', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -165,7 +165,7 @@ const VendorAddSales = () => {
         amount: Number(newRecord.unitsSold) * Number(newRecord.unitPrice)
       };
 
-      const response = await fetch("http://localhost:8001/capital/transaction", {
+      const response = await fetch("https://inventorybackend-flame.vercel.app/capital/transaction", {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(transactionData),

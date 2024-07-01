@@ -28,7 +28,7 @@ const BalanceSheet = () => {
   }, [transactions, filterType, startDate, endDate]);
 
   const fetchCapitalAmount = () => {
-    fetch('http://localhost:8001/capital')
+    fetch('https://inventorybackend-flame.vercel.app/capital')
       .then(response => response.json())
       .then(data => {
         if (data.capitalAmount) {
@@ -40,7 +40,7 @@ const BalanceSheet = () => {
   };
 
   const fetchTransactions = () => {
-    fetch('http://localhost:8001/capital/transactions')
+    fetch('https://inventorybackend-flame.vercel.app/capital/transactions')
       .then(response => response.json())
       .then(data => setTransactions(data))
       .catch(error => console.error('Error fetching transactions:', error));
@@ -59,7 +59,7 @@ const BalanceSheet = () => {
     return;
   }
 
-    fetch('http://localhost:8001/capital', {
+    fetch('https://inventorybackend-flame.vercel.app/capital', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -85,7 +85,7 @@ const BalanceSheet = () => {
     return;
   }
 
-    fetch('http://localhost:8001/capital', {
+    fetch('https://inventorybackend-flame.vercel.app/capital', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'

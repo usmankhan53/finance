@@ -25,7 +25,7 @@ const BuyPage = () => {
 
   const fetchInventory = async () => {
     try {
-      const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/inventory/${category}`);
+      const response = await fetch(`https://inventorybackend-flame.vercel.app/inventory/${category}`);
       if (!response.ok) throw new Error('Failed to fetch inventory');
       const data = await response.json();
       setInventory(data.purchases);
@@ -47,7 +47,7 @@ const BuyPage = () => {
   };
 
   const fetchCapitalAmount = () => {
-    fetch('http://localhost:8001/capital')
+    fetch('https://inventorybackend-flame.vercel.app/capital')
       .then(response => response.json())
       .then(data => {
         if (data.capitalAmount) {
@@ -59,7 +59,7 @@ const BuyPage = () => {
 
   const fetchSubCategories = async () => {
     try {
-      const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/inventory/${category}/subcategories`);
+      const response = await fetch(`https://inventorybackend-flame.vercel.app/inventory/${category}/subcategories`);
       if (!response.ok) throw new Error('Failed to fetch subcategories');
       const data = await response.json();
       setSubCategories(data);
@@ -98,7 +98,7 @@ const BuyPage = () => {
       return;
     }
 
-    const apiEndpoint = `https://financelocal.netlify.app/.netlify/functions/app/purchase/${category}`;
+    const apiEndpoint = `https://inventorybackend-flame.vercel.app/purchase/${category}`;
     const method = 'PUT';
 
     try {
@@ -116,7 +116,7 @@ const BuyPage = () => {
         body: JSON.stringify(purchaseData),
       });
 
-      fetch('http://localhost:8001/capital', {
+      fetch('https://inventorybackend-flame.vercel.app/capital', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -137,7 +137,7 @@ const BuyPage = () => {
         amount: units * costPerUnit
       };
 
-      const response2 = await fetch("http://localhost:8001/capital/transaction", {
+      const response2 = await fetch("https://inventorybackend-flame.vercel.app/capital/transaction", {
         method: method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(transactionData),
@@ -170,7 +170,7 @@ const BuyPage = () => {
 
     if (userResponse) {
       try {
-        const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/purchase/${category}/${purchaseId}`, {
+        const response = await fetch(`https://inventorybackend-flame.vercel.app/purchase/${category}/${purchaseId}`, {
           method: 'PUT',
         });
         if (!response.ok) throw new Error('Failed to delete purchase record');
@@ -214,7 +214,7 @@ const BuyPage = () => {
     }
 
     try {
-      const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/inventory/${category}/subcategories`, {
+      const response = await fetch(`https://inventorybackend-flame.vercel.app/inventory/${category}/subcategories`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newSubCategory }),
@@ -223,7 +223,7 @@ const BuyPage = () => {
       if (!response.ok) throw new Error('Failed to add subcategory');
 
       // Fetch the updated list of subcategories for the current category
-      const updatedSubCategoriesResponse = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/inventory/${category}/subcategories`);
+      const updatedSubCategoriesResponse = await fetch(`https://inventorybackend-flame.vercel.app/inventory/${category}/subcategories`);
       if (!updatedSubCategoriesResponse.ok) throw new Error('Failed to fetch updated subcategories');
       const updatedSubCategoriesData = await updatedSubCategoriesResponse.json();
 
@@ -239,7 +239,7 @@ const BuyPage = () => {
 
   const handleDeleteSubCategory = async (subCategory) => {
     try {
-      const response = await fetch(`http://localhost:8001/inventory/${category}/subcategories/${subCategory}`, {
+      const response = await fetch(`https://inventorybackend-flame.vercel.app/inventory/${category}/subcategories/${subCategory}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
       });

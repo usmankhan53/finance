@@ -6,7 +6,7 @@ const ProfitFilter = () => {
 
   const fetchProfitForPeriod = async (selectedPeriod) => {
     try {
-      const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/profit?period=${selectedPeriod}`);
+      const response = await fetch(`https://inventorybackend-flame.vercel.app/profit?period=${selectedPeriod}`);
       if (!response.ok) {
         throw new Error('Failed to fetch profit for the period');
       }

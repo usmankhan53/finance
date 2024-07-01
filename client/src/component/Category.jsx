@@ -60,7 +60,7 @@ export default function Category() {
 
       setAddButtonDisabled(true);
 
-      const response = await fetch('https://financelocal.netlify.app/.netlify/functions/app/inventory', {
+      const response = await fetch('https://inventorybackend-flame.vercel.app/inventory', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ export default function Category() {
 
   const deleteCategory = async (category) => {
     try {
-      const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/inventory/${category}`, {
+      const response = await fetch(`https://inventorybackend-flame.vercel.app/inventory/${category}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -118,7 +118,7 @@ export default function Category() {
         throw new Error('Please enter a valid name');
       }
 
-      const response = await fetch(`http://localhost:8001/inventory/${selectedCategory}`, {
+      const response = await fetch(`https://inventorybackend-flame.vercel.app/inventory/${selectedCategory}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -149,7 +149,7 @@ export default function Category() {
     const fetchInventoryCategories = async () => {
       try {
         setLoading(true); 
-        const response = await fetch('https://financelocal.netlify.app/.netlify/functions/app/inventory');
+        const response = await fetch('https://inventorybackend-flame.vercel.app/inventory');
         if (!response.ok) {
           throw new Error('Failed to fetch inventory items');
         }

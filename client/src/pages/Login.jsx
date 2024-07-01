@@ -23,7 +23,7 @@ function LoginForm({ onLogin }) {
 
       // Simulating successful login
       // Replace with actual API call
-      const response = await fetch('https://financelocal.netlify.app/.netlify/functions/app/login', {
+      const response = await fetch('https://inventorybackend-flame.vercel.app/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

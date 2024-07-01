@@ -13,7 +13,7 @@ function Bank() {
 
   const fetchVendors = async () => {
     try {
-      const response = await fetch('https://financelocal.netlify.app/.netlify/functions/app/vendor');
+      const response = await fetch('https://inventorybackend-flame.vercel.app/vendor');
       if (response.ok) {
         const data = await response.json();
         const records = data.flatMap(vendor => 

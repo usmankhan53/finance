@@ -12,7 +12,7 @@ const CashPurchase = () => {
 
   const fetchPurchasesData = async () => {
     try {
-      const response = await fetch('https://financelocal.netlify.app/.netlify/functions/app/inventory');
+      const response = await fetch('https://inventorybackend-flame.vercel.app/inventory');
       if (!response.ok) throw new Error('Failed to fetch purchases data');
       const dataArray = await response.json();
 

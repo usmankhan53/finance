@@ -13,7 +13,7 @@ function Unpaid() {
 
   const fetchVendors = async () => {
     try {
-      const response = await fetch('https://financelocal.netlify.app/.netlify/functions/app/vendor');
+      const response = await fetch('https://inventorybackend-flame.vercel.app/vendor');
       if (response.ok) {
         const data = await response.json();
         const records = data.flatMap(vendor => 
@@ -41,7 +41,7 @@ function Unpaid() {
   const handleSave = async (recordId, vendorName) => {
     const newStatus = editedRecords[recordId];
     try {
-      const response = await fetch(`https://financelocal.netlify.app/.netlify/functions/app/vendor/${vendorName}/${recordId}`, {
+      const response = await fetch(`https://inventorybackend-flame.vercel.app/vendor/${vendorName}/${recordId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
